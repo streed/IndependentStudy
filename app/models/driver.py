@@ -1,0 +1,25 @@
+from ..db import db
+
+class Driver( db.Model ):
+	"""
+		A Driver consists of their profile information.
+		Their account.
+		Their chedule.
+		Their car.
+
+		These are sent out to other tables and used there.
+	"""
+	id = db.Column( db.Integer, primary_key=True )
+	license_plate = db.Column( db.String( 10 ), unique=True )
+
+	#Driver relations
+	account_id = db.Column( db.Integer, db.ForeignKey( "account.id" ) )
+	car_id = db.Column( db.Integer, db.ForeignKey( "car.id" ) )
+
+	account = db.relationship( "Account", backref=db.backref( "driver", lazy="dynamic" ) )
+	car = db.relationship( "Car", backref=db.backref( "driver", lazy="dynamic" ) )
+
+	def __init__( self, license_plate, account, car ):
+		self.license_plate = license_plate
+		self.account = account
+		self.car = car
