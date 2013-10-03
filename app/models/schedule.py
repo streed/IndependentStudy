@@ -23,6 +23,9 @@ class Schedule( db.Model ):
 	#the driver cannot give any rides then.
 	is_active = db.Column( db.Boolean )
 
+	lat = db.Column( db.Float )
+	lng = db.Column( db.Float )
+
 	driver_id = db.Column( db.Integer, db.ForeignKey( "driver.id" ) )
 	driver = db.relationship( "Driver", backref=db.backref( "schedule", lazy="dynamic" ) )
 

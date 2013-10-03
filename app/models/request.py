@@ -3,7 +3,6 @@ from ..db import db
 class Request( db.Model ):
 	id = db.Column( db.Integer, primary_key=True )	
 	is_accepted = db.Column( db.Boolean )
-	schedule_id = db.Column( db.Integer )
 	rider_id = db.Column( db.Integer )
 	schedule_id = db.Column( db.Integer )
 

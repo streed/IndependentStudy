@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="jumbotron">
+		<div class="row">
+			<div id="gameguinCarousel" class="carousel slide carousel-fade row offset4 span4">
+				<div class="carousel-inner">
+				</div>
+			</div>
+		</div>
+		<div class="row">	
+			<h2>Schedule a ride or offer one!</h2>
+			<p class="lead">Post, Select, Ride</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span8">
+			<div class="span6">
+				<div class="page-header">
+					<h2>Super Easy</h2>
+					<p>A few clicks and you can get a ride or offer one</p>
+				</div>
+				<ul class="thumbnails">
+					<li class="span2">
+						<h3>Step 1</h3>
+						Post up your schedule or select from an available one.
+					</li>
+					<li class="span2">
+						<h3>Step 2</h3>
+						Create or respond to ride requests.
+					</li>
+					<li class="span2">
+						<h3>Step 3</h3>
+						Swap contact information and meetup.
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="span4">
+			<h2>Signup</h2>
+			<form action="/registration" method="POST">
+				<div class="control-group">
+					<div class="controls">
+						<div class="form-group">
+							<label for="emailAddress">Email address</label>
+							<input type="email" class="form-control" id="emailAddress" placeholder="Enter email">
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" class="form-control" id="password" placeholder="Password">
+						</div>
+					</div>
+					<button type="submit" name="submit">Register</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>	
+{% endblock %}

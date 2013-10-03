@@ -1,0 +1,43 @@
+{% extends "rider/rider.html" %}
+{% block title %}Rider Panel{% endblock %}
+{% block head %}
+	{{ super() }}
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<style>
+		#map-canvas {
+			height: 500px;
+		}
+	</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="offset1 span10" id="map-canvas"></div>
+	</div>
+</div>
+{% endblock %}
+{% block custom_javascript %}
+var map;
+function initialize() {
+	var mapOptions = {
+		zoom: 12,
+		center: new google.maps.LatLng( 37.2869, -80.0558 ),
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	map = new google.maps.Map( document.getElementById( 'map-canvas' ), mapOptions );
+
+
+	var content = "<div class='span2'>Sean can give a ride from Roanoke College to Valley View @ 2:30pm</div>";
+	var infoWindow = new google.maps.InfoWindow( { content: content } );
+	var marker = new google.maps.Marker( {
+		position: new google.maps.LatLng( 37.2869, -80.0558 ),
+		map: map,
+		title: "Sean's Ride"
+	});
+
+	google.maps.event.addListener( marker, "click", function() {
+		infoWindow.open( map, marker );
+	});
+}
+google.maps.event.addDomListener( window, 'load', initialize );
+{% endblock %}
