@@ -11,6 +11,7 @@ class Driver( db.Model ):
 	"""
 	id = db.Column( db.Integer, primary_key=True )
 	license_plate = db.Column( db.String( 10 ), unique=True )
+	availableSeats = db.Column( db.Integer )
 
 	#Driver relations
 	account_id = db.Column( db.Integer, db.ForeignKey( "account.id" ) )
@@ -19,7 +20,8 @@ class Driver( db.Model ):
 	account = db.relationship( "Account", backref=db.backref( "driver", lazy="dynamic" ) )
 	car = db.relationship( "Car", backref=db.backref( "driver", lazy="dynamic" ) )
 
-	def __init__( self, license_plate, account, car ):
+	def __init__( self, license_plate, account, car, availableSeats ):
 		self.license_plate = license_plate
 		self.account = account
 		self.car = car
+		self.availableSeats = availableSeats

@@ -3,14 +3,31 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="offset3 span4">
+		<div class="offset3 span6">
+			<div class="alert alert-success"><b>Awesome</b> your account was created now let's fill in some information.</div>
 			<div class="row">
-				<a href="/driver/set">Do you want to offer people rides?</a>
-			</div>
-		</div>
-		<div class="span4">
-			<div class="row">
-				<a href="/rider/set">Do you need a ride?</a>
+				<div class="thumbnail">
+					<div class="caption">
+						<form role="form">
+							<div class="offset1 span5">
+								<h3>Personal Info:</h3>
+								<div class="form-group">
+									<input type="text" class="form-control" id="firstName" placeholder="First Name">
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" id="lastName" placeholder="Last Name">
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" id="phoneNumber" placeholder="Phone Number">
+								</div>
+							</div>
+							<div class="offset1">
+								<button type="submit" class="btn btn-default">Become a Driver</button>
+								<button type="submit" class="btn btn-default">Become a Rider</button>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

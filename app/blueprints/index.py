@@ -9,8 +9,8 @@ def index_page():
 
 @index.route( "/about" )
 def about():
-	return render_template( "about.html" )
+	return render_template( "index/about.html" )
 
 @index.route( "/registration", methods=["GET","POST"] )
 def registration():
-	return render_template( "registration.html" )
+	return render_template( "index/registration.html" )
