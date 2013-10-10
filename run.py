@@ -13,5 +13,6 @@ if __name__ == "__main__":
 			from app.models.rider import *
 			from app.models.schedule import *
 			db.create_all()
+			db.create_default_roles()
 	else:
 		app.run( debug=True )

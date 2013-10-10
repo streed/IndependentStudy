@@ -1,6 +1,16 @@
+from flask.ext.security import SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from ..db import db
 
-class Account( db.Model ):
+roles_users = db.Table( "roles_users",
+		db.Column( "account_id", db.Integer(), db.ForeignKey( "account.id" ) ),
+		db.Column( "role_id", db.Integer(), db.ForeignKey( "role.id" ) ) )
+
+class Role( db.Model, RoleMixin ):
+	id = db.Column( db.Integer(), primary_key=True )
+	name = db.Column( db.String( 20 ), unique=True )
+	description = db.Column( db.String( 255 ) )
+
+class Account( db.Model, UserMixin ):
 	"""
 		Abstracting out the account details allows for people
 		to be both drivers AND riders. Without this there would
@@ -13,6 +23,8 @@ class Account( db.Model ):
 	name = db.Column( db.String( 80 ) )
 	age = db.Column( db.Integer )
 	phoneNumber = db.Column( db.String( 80 ) )
+	active = db.Column( db.Boolean() )
+	confirmed_at = db.Column( db.DateTime() )
 
 	#0 -> male
 	#1 -> female
@@ -20,3 +32,7 @@ class Account( db.Model ):
 	#This will be mapped to a string value through a method on this
 	#object.
 	gender = db.Column( db.Integer )
+
+	roles = db.relationship( "Role", secondary=roles_users, backref=db.backref( "users", lazy="dynamic" ) )
+
+accounts = SQLAlchemyUserDatastore( db, Account, Role )

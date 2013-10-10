@@ -17,7 +17,7 @@ class Driver( db.Model ):
 	account_id = db.Column( db.Integer, db.ForeignKey( "account.id" ) )
 	car_id = db.Column( db.Integer, db.ForeignKey( "car.id" ) )
 
-	account = db.relationship( "Account", backref=db.backref( "driver", lazy="dynamic" ) )
+	account = db.relationship( "Account", backref=db.backref( "driverAccount", lazy="dynamic" ) )
 	car = db.relationship( "Car", backref=db.backref( "driver", lazy="dynamic" ) )
 
 	def __init__( self, license_plate, account, car, availableSeats ):
