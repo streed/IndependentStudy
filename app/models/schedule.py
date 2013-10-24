@@ -1,5 +1,16 @@
 from ..db import db
 
+from .location import Location
+from .driver import Driver
+
+schedule_locations_start = db.Table( "schedule_locations_start", 
+			db.Column( "schedule_id", db.Integer(), db.ForeignKey( "schedule.id" ) ),
+			db.Column( "location_id", db.Integer(), db.ForeignKey( "location.id" ) ) )
+
+schedule_locations_end = db.Table( "schedule_locations_end", 
+			db.Column( "schedule_id", db.Integer(), db.ForeignKey( "schedule.id" ) ),
+			db.Column( "location_id", db.Integer(), db.ForeignKey( "location.id" ) ) )
+
 class Schedule( db.Model ):
 	"""
 		This encompasses the information that is needed
@@ -23,18 +34,19 @@ class Schedule( db.Model ):
 	#the driver cannot give any rides then.
 	is_active = db.Column( db.Boolean )
 
-	lat = db.Column( db.Float )
-	lng = db.Column( db.Float )
-
+	start = db.relationship( "Location", secondary=schedule_locations_start, backref=db.backref( "schedules_start" , lazy="dynamic" ), uselist=False )
+	end = db.relationship( "Location", secondary=schedule_locations_end, backref=db.backref( "schedules_end", lazy="dynamic" ), uselist=False )
+	
 	driver_id = db.Column( db.Integer, db.ForeignKey( "driver.id" ) )
-	driver = db.relationship( "Driver", backref=db.backref( "schedule", lazy="dynamic" ) )
+	driver = db.relationship( "Driver", uselist=False )
 
-	def __init__( self, day, time, is_permanent, is_active, driver ):
+	def __init__( self, day, time, is_permanent, is_active, driver, start, end ):
 		self.day = day
 		self.time = time
 		self.is_permanent = is_permanent
 		self.is_active = is_active
 		self.driver = driver
-
+		self.start = start
+		self.end = end
 
 

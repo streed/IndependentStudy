@@ -21,7 +21,54 @@ def create_default_roles():
 
 	accounts.create_role( name="Admin", description="This marks a user as a Admin and they can only access the Admin pages and information." )
 	accounts.create_role( name="Rider", description="This marks a user as a Rider" )
-	accounts.create_role( name="Driver", description="This marks a user as a Drover" )
+	accounts.create_role( name="Driver", description="This marks a user as a Driver" )
+
+	db.session.commit()
+
+def create_some_example_data():
+	#Create a few dummy drivers.
+	dr = accounts.find_role( "Driver" )
+	driver = accounts.create_user( email="test_driver_1@test.com", password="pass" )
+	accounts.add_role_to_user( driver, dr )
+
+	from .models.driver import Driver
+	from .models.car import Car
+	car = Car( "Toyota", "Corolla", "Black" )
+	db.session.add( car )
+
+	driver = Driver( "test_plate", driver, car, 3 )
+	db.session.add( driver )
+
+	driver1 = accounts.create_user( email="test_driver_2@test.com", password="pass" )
+	accounts.add_role_to_user( driver1, dr )
+
+	driver1 = Driver( "test_plate2", driver1, car, 2 )
+	db.session.add( driver1 )
+
+	#Make some locations.
+	from .models.location import Location
+	start = Location( 37.297923, -80.055787 )
+	end = Location( 37.290411, -80.042922 )
+
+	end2 = Location( 37.30403, -79.964281 )
+
+	db.session.add( start )
+	db.session.add( end )
+	db.session.add( end2 )
+
+	#Create a couple schedules.
+	from .models.schedule import Schedule
+
+	sched = Schedule( 0, 14*60, True, True, driver, start, end )
+	db.session.add( sched )
+
+	sched = Schedule( 2, 14*60, True, True, driver1, start, end ) 
+	db.session.add( sched )
+
+	sched = Schedule( 0, 14*60, True, True, driver1, start, end2 )
+	db.session.add( sched )
+
 	db.session.commit()
 
 db.create_default_roles = create_default_roles
+db.create_some_example_data = create_some_example_data

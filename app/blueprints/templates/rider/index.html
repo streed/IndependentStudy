@@ -17,7 +17,10 @@
 </div>
 {% endblock %}
 {% block custom_javascript %}
+var schedules = {{ schedules|tojson }};
 var map;
+var directions = new google.maps.DirectionsService();
+var directionsDisplay;
 function initialize() {
 	var mapOptions = {
 		zoom: 12,
@@ -38,6 +41,27 @@ function initialize() {
 	google.maps.event.addListener( marker, "click", function() {
 		infoWindow.open( map, marker );
 	});
+
+
+	for( var i = 0; i < schedules.length; i++ ) {
+		var temp = schedules[i];
+		var start = new google.maps.LatLng( temp["start"][0], temp["start"][1] );
+		var end = new google.maps.LatLng( temp["end"][0], temp["end"][1] );
+
+		var request = {
+			origin: start,
+			destination: end,
+			travelMode: google.maps.TravelMode.DRIVING
+		};
+
+		directions.route( request, function( result, status ) {
+			if( status == google.maps.DirectionsStatus.OK ) {
+				directionsDisplay = new google.maps.DirectionsRenderer();
+				directionsDisplay.setMap( map )
+				directionsDisplay.setDirections( result );
+			}
+		});
+	}
 }
 google.maps.event.addDomListener( window, 'load', initialize );
 {% endblock %}

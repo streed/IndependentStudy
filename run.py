@@ -12,8 +12,10 @@ if __name__ == "__main__":
 			from app.models.request import *
 			from app.models.rider import *
 			from app.models.schedule import *
+			from app.models.location import *
 			db.drop_all()
 			db.create_all()
 			db.create_default_roles()
+			db.create_some_example_data()
 	else:
 		app.run( debug=True )
