@@ -20,7 +20,8 @@ def create_default_roles():
 	"""
 
 	accounts.create_role( name="Admin", description="This marks a user as a Admin and they can only access the Admin pages and information." )
-	accounts.create_role( name="User", description="This marks a user as a User and they can only access the User pages and information." )
+	accounts.create_role( name="Rider", description="This marks a user as a Rider" )
+	accounts.create_role( name="Driver", description="This marks a user as a Drover" )
 	db.session.commit()
 
 db.create_default_roles = create_default_roles

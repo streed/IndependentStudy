@@ -20,3 +20,4 @@ from .blueprints.rider import rider
 app.register_blueprint( index )
 app.register_blueprint( driver, url_prefix="/driver" )
 app.register_blueprint( rider, url_prefix="/rider" )
+
