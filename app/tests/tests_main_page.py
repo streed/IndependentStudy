@@ -21,12 +21,14 @@ class TestMain( unittest.TestCase ):
 		assert_equals( 200, response.status_code )
 
 	def test_registration_page( self ):
-		response = self.register( "Sean", "Reed", "555-555-5555" )
+		response = self.register( "test@test.com", "test", "Test", 22, "555-555-5555" )
 
 		assert_equals( 200, response.status_code )
 
-	def register( self, first, last, phone ):
-		return self.tests.post( "/registration", data=dict( 
-								firstName=first,
-								lastName=last,
-								phoneNumber=phone ))
+	def register( self, email, password, first, age, phone, page="/" ):
+		return self.tests.post( page, data=dict( 
+								email=email,
+								password=password,
+								name=first,
+								age=age,
+								honeNumber=phone ))

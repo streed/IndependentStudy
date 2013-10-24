@@ -3,37 +3,26 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="offset3 span6">
-			<div class="alert alert-success"><b>Awesome</b> your account was created now let's fill in some information.</div>
+		<div class="offset3 span3">
 			<div class="row">
 				<div class="thumbnail">
 					<div class="caption">
-						<form role="form">
-							<div class="offset1 span5">
-								<h3>Personal Info:</h3>
-								<div class="form-group">
-									<input type="text" class="form-control" id="firstName" placeholder="First Name">
+						<form action="/" method="POST">
+							<div class="control-group">
+								<div class="controls">
+									{{ form.csrf_token }}
+									{{ form.email.label }}{{ form.email( size=20 ) }}
+									{{ form.password.label }}{{ form.password( size=20 ) }}
+									{{ form.name.label }}{{ form.name( size=20 ) }}
+									{{ form.age.label }}{{ form.age( size=20 ) }}
+									{{ form.phoneNumber.label }}{{ form.phoneNumber() }}
 								</div>
-								<div class="form-group">
-									<input type="text" class="form-control" id="lastName" placeholder="Last Name">
-								</div>
-								<div class="form-group">
-									<input type="text" class="form-control" id="phoneNumber" placeholder="Phone Number">
-								</div>
-							</div>
-							<div class="offset1">
-								<button type="submit" class="btn btn-default">Become a Driver</button>
-								<button type="submit" class="btn btn-default">Become a Rider</button>
+								<button type="submit" name="submit">Register</button>
 							</div>
 						</form>
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="offset2 span8">
-			Remember you can become both a rider or a driver from your account page.
 		</div>
 	</div>
 </div>
