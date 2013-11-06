@@ -68,6 +68,8 @@ def create_some_example_data():
 	sched = Schedule( 0, 14*60, True, True, driver1, start, end2 )
 	db.session.add( sched )
 
+	sched = Schedule( 6, 10*60, True, True, driver, end, end2 )
+
 	db.session.commit()
 
 db.create_default_roles = create_default_roles

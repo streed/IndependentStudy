@@ -29,20 +29,6 @@ function initialize() {
 	};
 	map = new google.maps.Map( document.getElementById( 'map-canvas' ), mapOptions );
 
-
-	var content = "<div class='span2'>Sean can give a ride from Roanoke College to Valley View @ 2:30pm</div>";
-	var infoWindow = new google.maps.InfoWindow( { content: content } );
-	var marker = new google.maps.Marker( {
-		position: new google.maps.LatLng( 37.2869, -80.0558 ),
-		map: map,
-		title: "Sean's Ride"
-	});
-
-	google.maps.event.addListener( marker, "click", function() {
-		infoWindow.open( map, marker );
-	});
-
-
 	for( var i = 0; i < schedules.length; i++ ) {
 		var temp = schedules[i];
 		var start = new google.maps.LatLng( temp["start"][0], temp["start"][1] );
