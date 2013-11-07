@@ -6,17 +6,40 @@
 	<style>
 		#map-canvas {
 			height: 500px;
+			position: absolute;
 		}
 	</style>
 {% endblock %}
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="offset1 span10" id="map-canvas"></div>
+		<div class="span3">
+			<fieldset>
+				<legend>Search for a ride</legend>
+				<form>
+					<label>Location:</label>
+					<input type="text" placeholder="Where are you?">
+
+					<label>Day:</label>
+					<input type="text" placeholder="What day?">
+
+					<label>Time:</label>
+					<input type="text" placeholder="What time?">
+					<!--<div class="input-append datepicker" data-date="12-12-2013" data-date-format="dd-mm-yyyy">
+						<input class="span2" size=16 type="text" value="12-12-2013">
+					</div>-->
+
+		</div>
+		<div class="offset3 span8" id="map-canvas"></div>
 	</div>
 </div>
 {% endblock %}
 {% block custom_javascript %}
+(function($) {
+	$( document ).ready( function() {
+		$(".datepicker").datepicker();
+	});
+})(jQuery);
 var schedules = {{ schedules|tojson }};
 var map;
 var directions = new google.maps.DirectionsService();
