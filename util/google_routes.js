@@ -1,17 +1,6 @@
 var util = require( "util" )
 var g = require( "googlemaps" )
 
-//./google_routes.js 37.297923 -80.055787 37.30403 -79.964281
-var args = process.argv.slice( 2 );
-
-var slat = args[0];
-var slng = args[1];
-var dlat = args[2];
-var dlng = args[3];
-
-var start = slat + " " + slng;
-var end = dlat + " " + dlng;
-
 var polylineParse = function( line ) {
 	var points = [];
 	var i = 0, lat = 0, lng = 0, point_id = 0;
@@ -28,8 +17,7 @@ var polylineParse = function( line ) {
 		lat += dlat;
 
 		shift = 0;
-		result = 0;
-		
+		result = 0;	
 		do {
 			b = line.charCodeAt( i++ ) - 63;
 			result |= ( b & 0x1f ) << shift;
@@ -77,15 +65,45 @@ var stepsFilter = function( steps ) {
 	return results;
 }
 
-g.directions( start, end, function(err, data) {
-	if( data ) {
-		var r = data.routes;
-		var polyline = r[0].overview_polyline.points;
-		var points = polylineParse( polyline );
-
-		var steps = stepsFilter( r[0].legs[0].steps );
-
-		util.puts( JSON.stringify( { steps: steps, points: points } ) );
+var getDirections = function( route_stack, index, current ) {
+	if( current == undefined ) {
+		current = { routes: [] };
 	}
-});
+	if( index == undefined ) {
+		index = 0;
+	} else if( index >= route_stack.length ) {
+		util.puts( JSON.stringify( current ) );
+		return;
+	}
 
+	cur = route_stack[index].split( " " )
+
+	var slat = cur[0];
+	var slng = cur[1];
+	var dlat = cur[2];
+	var dlng = cur[3];
+
+	var start = slat + " " + slng;
+	var end = dlat + " " + dlng;
+
+	g.directions( start, end, function(err, data) {
+		if( data ) {
+			var r = data.routes;
+			//var polyline = r[0].overview_polyline.points;
+			//var points = polylineParse( polyline );
+
+			var steps = stepsFilter( r[0].legs[0].steps );
+
+			current.routes.push( { gps: route_stack[index], steps: steps } );
+
+		 	getDirections( route_stack, index + 1, current );
+		}
+	});
+
+}
+
+
+//./google_routes.js "37.297923 -80.055787 37.30403 -79.964281"
+var args = process.argv.slice( 2 );
+
+getDirections( args );
