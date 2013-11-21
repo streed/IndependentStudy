@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, abort, redirect
+from flask_security.core import current_user
 from jinja2 import TemplateNotFound
 
 from ..db import accounts, db
@@ -31,6 +32,8 @@ def registerValidation( accountForm ):
 
 @index.route( "/", methods=["GET", "POST"] )
 def index_page():	
+	if( current_user.is_authenticated() ):
+		return redirect( "/rider" )
 	accountForm = AccountForm()
 	ret = registerValidation( accountForm )
 

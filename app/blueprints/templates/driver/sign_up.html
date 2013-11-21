@@ -3,22 +3,23 @@
 {% block content %}
 <div class="container">
 	<div class="row">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for m in messages %}
+					<div class='alert alert-error'>{{ m }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
 		<div class="offset4 span3">
-			<form>
+			<form method="post" action="/driver/">
 				<fieldset>
 					<legend>Car Information</legend>
-					<label>License Place</label>
-					<input type="text" placeholder="License Plate">
-
-					<label>Make</label>
-					<input type="text" placeholder="Car Make">
-
-					<label>Model</label>
-					<input type="text" placeholder="Car Model">
-
-					<label>Color</label>
-					<input type="text" placeholder="Car Color">
-
+					{{ car.hidden_tag() }}
+					{{ car.make.label }}{{ car.make }}
+					{{ car.model.label }}{{ car.model }}
+					{{ car.color.label }}{{ car.color }}
+					{{ car.license_plate.label }}{{ car.license_plate }}
+					{{ car.available_seats.label }}{{ car.available_seats }}
 					<button type="submit">Signup</button>
 				<fieldset>
 			</form>

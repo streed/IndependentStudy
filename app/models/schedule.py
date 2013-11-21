@@ -1,5 +1,7 @@
-from ..db import db
+from flask.ext.wtf import Form
+from wtforms.ext.sqlalchemy.orm import model_form
 
+from ..db import db
 from .location import Location
 from .driver import Driver
 
@@ -50,3 +52,4 @@ class Schedule( db.Model ):
 		self.end = end
 
 
+ScheduleForm = model_form( Schedule, Form )
