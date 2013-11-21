@@ -1,5 +1,7 @@
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
+from wtforms import TextField, IntegerField
+from wtforms.validators import DataRequired
 
 from ..db import db
 from .location import Location
@@ -51,5 +53,10 @@ class Schedule( db.Model ):
 		self.start = start
 		self.end = end
 
+class ScheduleForm( Form ):
+	day = IntegerField( 'Day', validators=[DataRequired()] )
+	time = IntegerField( 'Time', validators=[DataRequired()] )
+	start = TextField( 'Start Location', validators=[DataRequired()] )
+	end = TextField( 'End Location', validators=[DataRequired()] )
 
-ScheduleForm = model_form( Schedule, Form )
+

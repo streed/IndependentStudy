@@ -1,3 +1,5 @@
+import os
+import subprocess
 from ..db import db
 
 class Location( db.Model ):
@@ -8,3 +10,11 @@ class Location( db.Model ):
 	def __init__( self, lat, lng ):
 		self.lat = lat
 		self.lng = lng
+
+def geolocate( str_loc ):
+
+	params = [ "/usr/bin/node %s" % os.path.join( os.path.dirname( __file__ ), "..", "..", "util", "geolocate.js" ), "\"%s\"" % str_loc ]
+
+	out = subprocess.check_output( params )
+
+	print( out )

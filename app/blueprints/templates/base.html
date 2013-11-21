@@ -38,7 +38,19 @@
 				</div>
 			</div>
 		</div>
-		<div id="content">{% block content %}{% endblock %}</div>
+		<div id="content">
+			{% block errors %}
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						{% for m in messages %}
+							<div class='alert alert-error'>{{ m }}</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+			{% endblock %}
+			{% block content %}
+			{% endblock %}
+		</div>
 	</body>
 	<div id="footer">
 		<div class="container">

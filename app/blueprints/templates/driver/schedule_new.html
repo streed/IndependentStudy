@@ -1,0 +1,21 @@
+{% extends "driver/driver.html" %}
+{% block title %}Schedule: New One{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="offset4 span4">
+			<form method="post" action="/driver/schedule/new">
+				<fieldset>
+					<legend>Schedule Information</legend>
+					{{ schedule.hidden_tag() }}
+					{{ schedule.start.label }}{{ schedule.start }}
+					{{ schedule.end.label }}{{ schedule.end }}
+					{{ schedule.day.label }}{{ schedule.day }}
+					{{ schedule.time.label }}{{ schedule.time }}
+					<button type="submit">Add new Schedule</button>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

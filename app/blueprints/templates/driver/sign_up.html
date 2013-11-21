@@ -3,13 +3,6 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		{% with messages = get_flashed_messages() %}
-			{% if messages %}
-				{% for m in messages %}
-					<div class='alert alert-error'>{{ m }}</div>
-				{% endfor %}
-			{% endif %}
-		{% endwith %}
 		<div class="offset4 span3">
 			<form method="post" action="/driver/">
 				<fieldset>

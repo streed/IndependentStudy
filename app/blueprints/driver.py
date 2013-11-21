@@ -7,6 +7,7 @@ from ..models.account import accounts
 from ..models.car import Car, CarForm
 from ..models.driver import Driver
 from ..models.schedule import Schedule, ScheduleForm
+from ..models.location import geolocate
 from ..db import db
 
 driver = Blueprint( "driver", __name__, template_folder="templates" )
@@ -42,17 +43,31 @@ def schedule():
 	else:
 		return redirect( "/" )
 
-@driver.route( "/schedule/new" )
+@driver.route( "/schedule/new", methods=["get", "post"] )
 @login_required
 def schedule_add():
 	if( current_user.has_role( "Driver" ) ):
 		scheduleForm = ScheduleForm()
-
 		if( scheduleForm.validate_on_submit() ):
-			#Save schedule
+			driver = Driver.query.filter_by( account=current_user ).first()
 
+			start = geolocate( scheduleForm.start.data )
+			end = geolocate( scheduleForm.end.data )
+
+			schedule = Schedule( 
+						scheduleForm.day.data, 
+						scheduleForm.time.data, 
+						True, 
+						True, 
+						driver, 
+						start,
+						end )
+			db.session.add( schedule )
+			db.session.commit()
+	
 			return redirect( "/schedule" )
 		else:
-			return render_template( "driver/schedule_add.html" )
+			errors( scheduleForm )
+			return render_template( "driver/schedule_new.html", schedule=scheduleForm )
 	else:
 		return redirect( "/driver" )
