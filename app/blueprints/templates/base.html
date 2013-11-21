@@ -42,9 +42,11 @@
 			{% block errors %}
 				{% with messages = get_flashed_messages() %}
 					{% if messages %}
+					<div class="container">
 						{% for m in messages %}
 							<div class='alert alert-error'>{{ m }}</div>
 						{% endfor %}
+					</div>
 					{% endif %}
 				{% endwith %}
 			{% endblock %}
