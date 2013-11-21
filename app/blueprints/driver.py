@@ -14,7 +14,7 @@ driver = Blueprint( "driver", __name__, template_folder="templates" )
 
 def errors( form ):
 	for f, e in form.errors.items():
-		flash( "%s %s" % ( getattr( form, f ).label.text, e ) )
+		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ) )
 
 @driver.route( "/", methods=["get","post"] )
 @login_required
