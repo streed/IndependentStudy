@@ -59,16 +59,12 @@ def create_some_example_data():
 	#Create a couple schedules.
 	from .models.schedule import Schedule
 
-	sched = Schedule( 0, 14*60, True, True, driver, start, end )
+	sched = Schedule( 0, 14*60, True, True, driver, "Roanoke College",  start, "Valley View Mall", end )
 	db.session.add( sched )
 
-	sched = Schedule( 2, 14*60, True, True, driver1, start, end ) 
-	db.session.add( sched )
 
-	sched = Schedule( 0, 14*60, True, True, driver1, start, end2 )
+	sched = Schedule( 0, 14*60, True, True, driver1, "Kime Lane, Salem VA", start, "Valley View Mall", end2 )
 	db.session.add( sched )
-
-	sched = Schedule( 6, 10*60, True, True, driver, end, end2 )
 
 	db.session.commit()
 

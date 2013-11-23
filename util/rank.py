@@ -24,8 +24,10 @@ for steps in routes:
 
 steps_locs = np.array( steps_locs )
 
+print( "Number of steps:", len( steps_locs ) )
+
 #Build the tree using the GPS coordinates.
-tree = spatial.KDTree( steps_locs )
+tree = spatial.cKDTree( steps_locs )
 
 #Begin the finding of the points that are of interest.
 steps = {}

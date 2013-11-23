@@ -13,6 +13,7 @@ if __name__ == "__main__":
 			from app.models.rider import *
 			from app.models.schedule import *
 			from app.models.location import *
+			from app.models.route import *
 			db.drop_all()
 			db.create_all()
 			db.create_default_roles()

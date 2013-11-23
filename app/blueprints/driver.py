@@ -7,7 +7,6 @@ from ..models.account import accounts
 from ..models.car import Car, CarForm
 from ..models.driver import Driver
 from ..models.schedule import Schedule, ScheduleForm
-from ..models.location import geolocate
 from ..db import db
 
 driver = Blueprint( "driver", __name__, template_folder="templates" )

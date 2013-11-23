@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, json
 from flask.ext.security import login_required
 from flask.ext.security.decorators import roles_required, roles_accepted
+
+from ..util import get_ranked_schedules
 
 rider = Blueprint( "rider", __name__, template_folder="templates" )
 
@@ -8,16 +10,18 @@ from ..models.schedule import Schedule
 
 @rider.route( "/" )
 @login_required
-@roles_accepted( "Admin", "Rider" )
+@roles_accepted( "Rider" )
 def index():
+	return render_template( "rider/index.html", schedules=[] )
 
-	#TODO This should be filtered and return by a different handler rather than
-	#on the page itself.
-	schedules = Schedule.query.all()
-
+@rider.route( "/routes/<lat>/<lng>" )
+@login_required
+@roles_accepted( "Rider" )
+def get_routes( lat, lng ):
+	schedules = get_ranked_schedules( lat, lng )
 	scheds = []
 	for s in schedules:
 		scheds.append( { "driver_id": s.driver.id, "start": [ s.start.lat, s.start.lng ], "end": [ s.end.lat, s.end.lng ] } )
 
-	return render_template( "rider/index.html", schedules=scheds )
+	return json.dumps( scheds )
 

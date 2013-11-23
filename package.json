@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "googlemaps": "~0.1.9",
+    "kdtree": "~0.0.7",
+    "node-gyp": "~0.11.0",
+    "orm": "~2.1.3",
+    "sqlite3": "~2.1.18"
+  }
+}

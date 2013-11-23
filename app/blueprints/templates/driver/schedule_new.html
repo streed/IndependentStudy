@@ -8,6 +8,8 @@
 				<fieldset>
 					<legend>Schedule Information</legend>
 					{{ schedule.hidden_tag() }}
+					{{ schedule.start_str }}
+					{{ schedule.end_str }}
 					{{ schedule.start.label }}{{ schedule.start }}
 					{{ schedule.end.label }}{{ schedule.end }}
 					{{ schedule.day.label }}{{ schedule.day }}

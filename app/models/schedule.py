@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
-from wtforms import TextField, IntegerField
+from wtforms import TextField, IntegerField, HiddenField
 from wtforms.validators import DataRequired
 
 from ..db import db
@@ -38,24 +38,30 @@ class Schedule( db.Model ):
 	#the driver cannot give any rides then.
 	is_active = db.Column( db.Boolean )
 
+	start_str = db.Column( db.String( 64 ) )
+	end_str = db.Column( db.String( 64 ) )
 	start = db.relationship( "Location", secondary=schedule_locations_start, backref=db.backref( "schedules_start" , lazy="dynamic" ), uselist=False )
 	end = db.relationship( "Location", secondary=schedule_locations_end, backref=db.backref( "schedules_end", lazy="dynamic" ), uselist=False )
 	
 	driver_id = db.Column( db.Integer, db.ForeignKey( "driver.id" ) )
 	driver = db.relationship( "Driver", uselist=False )
 
-	def __init__( self, day, time, is_permanent, is_active, driver, start, end ):
+	def __init__( self, day, time, is_permanent, is_active, driver, start_str, start, end_str, end ):
 		self.day = day
 		self.time = time
 		self.is_permanent = is_permanent
 		self.is_active = is_active
 		self.driver = driver
+		self.start_str = start_str
 		self.start = start
+		self.end_str = end_str
 		self.end = end
 
 class ScheduleForm( Form ):
 	day = IntegerField( 'Day', validators=[DataRequired()] )
 	time = IntegerField( 'Time', validators=[DataRequired()] )
+	start_str = HiddenField( "start_str" )
+	end_str = HiddenField( "end_str" )
 	start = TextField( 'Start Location', validators=[DataRequired()] )
 	end = TextField( 'End Location', validators=[DataRequired()] )
 

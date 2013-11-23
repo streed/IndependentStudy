@@ -18,7 +18,7 @@
 				<legend>Search for a ride</legend>
 				<form>
 					<label>Location:</label>
-					<input type="text" placeholder="Where are you?">
+					<input class="location" type="text" placeholder="Where are you?">
 
 					<label>Day:</label>
 					<input type="text" placeholder="What day?">
@@ -35,25 +35,48 @@
 </div>
 {% endblock %}
 {% block custom_javascript %}
-(function($) {
-	$( document ).ready( function() {
-		$(".datepicker").datepicker();
-	});
-})(jQuery);
-var schedules = {{ schedules|tojson }};
+var schedules = [];
+var routes = [];
 var map;
 var directions = new google.maps.DirectionsService();
+var geocoder = new google.maps.Geocoder();
 var directionsDisplay;
-function initialize() {
-	var mapOptions = {
-		zoom: 12,
-		center: new google.maps.LatLng( 37.2869, -80.0558 ),
-		mapTypeId: google.maps.MapTypeId.ROADMAP
-	};
-	map = new google.maps.Map( document.getElementById( 'map-canvas' ), mapOptions );
+var you;
+(function($) {
+	$( document ).ready( function() {
+		//$(".datepicker").datepicker();
+		
+		$(".location").blur( function( e ) {
+			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
+				var loc = result[0].geometry.location;
+				var lat = loc.ob;
+				var lng = loc.pb;
+				$.get( "/rider/routes/" + lat + "/" + lng, function( data, status ) {
+					schedules = $.parseJSON( data );
+					put_routes( schedules );
+				});
+
+				if( you ) {
+					you.setMap( null );
+				}
+
+				you = new google.maps.Marker({
+					position: new google.maps.LatLng( lat, lng ),
+					map: map,
+					title: "You"
+				});
+			});
+		});
+	});
+})(jQuery);
+function put_routes( s ) {
+	for( var i = 0; i < routes.length; i++ ) {
+		routes[i].setMap( null );
+	}
+	routes = [];
 
 	for( var i = 0; i < schedules.length; i++ ) {
-		var temp = schedules[i];
+		var temp = s[i];
 		var start = new google.maps.LatLng( temp["start"][0], temp["start"][1] );
 		var end = new google.maps.LatLng( temp["end"][0], temp["end"][1] );
 
@@ -68,9 +91,19 @@ function initialize() {
 				directionsDisplay = new google.maps.DirectionsRenderer();
 				directionsDisplay.setMap( map )
 				directionsDisplay.setDirections( result );
+				routes.push( directionsDisplay );
 			}
 		});
 	}
+}
+function initialize() {
+	var mapOptions = {
+		zoom: 12,
+		center: new google.maps.LatLng( 37.2869, -80.0558 ),
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	map = new google.maps.Map( document.getElementById( 'map-canvas' ), mapOptions );
+
 }
 google.maps.event.addDomListener( window, 'load', initialize );
 {% endblock %}

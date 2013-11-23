@@ -3,7 +3,7 @@ var g = require( "googlemaps" )
 
 var geoLocate = function( args ) {
 	g.geocode( args[0], function( err, data ) {
-		util.puts( JSON.stringify( data.results[0].geometry ) );
+		util.puts( JSON.stringify( data.results[0].geometry.location ) );
 	});
 };
 

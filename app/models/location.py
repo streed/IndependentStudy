@@ -11,10 +11,3 @@ class Location( db.Model ):
 		self.lat = lat
 		self.lng = lng
 
-def geolocate( str_loc ):
-
-	params = [ "/usr/bin/node %s" % os.path.join( os.path.dirname( __file__ ), "..", "..", "util", "geolocate.js" ), "\"%s\"" % str_loc ]
-
-	out = subprocess.check_output( params )
-
-	print( out )
