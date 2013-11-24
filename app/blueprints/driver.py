@@ -37,7 +37,8 @@ def index():
 @login_required
 def schedule():
 	if( current_user.has_role( "Driver" ) ):
-		return render_template( "driver/schedule.html" )
+		schedules = current_user.driver[0].schedules
+		return render_template( "driver/schedule.html", schedules=schedules )
 	else:
 		return redirect( "/" )
 
@@ -46,8 +47,6 @@ def schedule():
 @login_required
 def schedule_add():
 	scheduleForm = ScheduleForm()
-	print( scheduleForm.day.choices )
-	print( scheduleForm.time.choices )
 	if( scheduleForm.validate_on_submit() ):
 		driver = Driver.query.filter_by( account=current_user ).first()
 		start_str = scheduleForm.start_str.data

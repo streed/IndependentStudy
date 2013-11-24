@@ -44,7 +44,7 @@ class Schedule( db.Model ):
 	end = db.relationship( "Location", secondary=schedule_locations_end, backref=db.backref( "schedules_end", lazy="dynamic" ), uselist=False )
 	
 	driver_id = db.Column( db.Integer, db.ForeignKey( "driver.id" ) )
-	driver = db.relationship( "Driver", uselist=False )
+	driver = db.relationship( "Driver", backref="schedules", uselist=False )
 
 	def __init__( self, day, time, is_permanent, is_active, driver, start_str, start, end_str, end ):
 		self.day = day
@@ -58,8 +58,8 @@ class Schedule( db.Model ):
 		self.end = end
 
 class ScheduleForm( Form ):
-	day = SelectField( 'Day', coerce=int, choices=[(0, "Monday"), ( 1, "Tuesday" ), ( 2, "Wednesday" ), ( 3, "Thursday" ), ( 4, "Friday" ), ( 5, "Saturday" ), ( 6, "Sunday" ) ], validators=[DataRequired()] )
-	time = SelectField( 'Time', coerce=int, choices=[ ( i // 30, "%02d:%02d" % ( i // 60, i % 60 ) ) for i in range( 24 * 60 ) if i % 30 == 0], validators=[DataRequired()] )
+	day = SelectField( 'Day', coerce=int, default=0, choices=[(0, "Monday"), ( 1, "Tuesday" ), ( 2, "Wednesday" ), ( 3, "Thursday" ), ( 4, "Friday" ), ( 5, "Saturday" ), ( 6, "Sunday" ) ] )
+	time = SelectField( 'Time', coerce=int, default=0, choices=[ ( i // 30, "%02d:%02d" % ( i // 60, i % 60 ) ) for i in range( 24 * 60 ) if i % 30 == 0] )
 	start_str = TextField( "Start Location", validators=[DataRequired()] )
 	end_str = TextField( "End Location", validators=[DataRequired()] )
 	start = HiddenField( 'Start Location', validators=[DataRequired()] )

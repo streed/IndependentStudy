@@ -30,7 +30,6 @@ var geocoder = new google.maps.Geocoder();
 	$( document ).ready( function() {
 		$("#start_str").blur( function( e ) {
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
-				console.log( result );
 				if( result.length > 1 ) {
 					var t = "<select id=\"start_select\">";
 					for( var i in result ) {
@@ -54,6 +53,9 @@ var geocoder = new google.maps.Geocoder();
 							$("#start_select").remove();
 						});
 					});
+					$("#start_select").blur( function() {
+						$(this).remove();
+					});
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
 					var lat = loc.ob;
@@ -64,7 +66,6 @@ var geocoder = new google.maps.Geocoder();
 		});
 		$("#end_str").blur( function( e ) {
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
-				console.log( result );
 				if( result.length > 1 ) {
 					var t = "<select id=\"end_select\">";
 					for( var i in result ) {
@@ -87,6 +88,9 @@ var geocoder = new google.maps.Geocoder();
 							$("#end").val( lat + "," + lng );
 							$("#end_select").remove();
 						});
+					});
+					$("#end_select").blur( function() {
+						$(this).remove();
 					});
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
