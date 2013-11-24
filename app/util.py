@@ -1,9 +1,18 @@
+from flask import flash
+
 from .models.schedule import Schedule
 
 routes = {}
 
 import numpy as np
 from scipy import spatial
+
+def errors( form ):
+	for f, e in form.errors.items():
+		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ) )
+
+def save_route( schedule ):
+	pass
 
 def rank_routes( client ):
 	#Read in the data file, for now just out.json, should 

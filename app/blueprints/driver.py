@@ -1,19 +1,19 @@
-from flask import Blueprint, render_template, abort, redirect, flash
+from flask import Blueprint, render_template, abort, redirect
 from flask.ext.security import login_required
 from flask.ext.security.core import current_user
 from flask.ext.security.decorators import roles_required, roles_accepted
 
+from ..db import db
 from ..models.account import accounts
 from ..models.car import Car, CarForm
 from ..models.driver import Driver
 from ..models.schedule import Schedule, ScheduleForm
-from ..db import db
+from ..util import errors
+
+from ..util import save_route
 
 driver = Blueprint( "driver", __name__, template_folder="templates" )
 
-def errors( form ):
-	for f, e in form.errors.items():
-		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ) )
 
 @driver.route( "/", methods=["get","post"] )
 @login_required
@@ -49,9 +49,14 @@ def schedule_add():
 		scheduleForm = ScheduleForm()
 		if( scheduleForm.validate_on_submit() ):
 			driver = Driver.query.filter_by( account=current_user ).first()
+			start_str = scheduleForm.start_str.data
+			start = scheduleForm.start.data
+			end_str = scheduleForm.end_str.data
+			end = scheduleForm.end.data
 
-			start = geolocate( scheduleForm.start.data )
-			end = geolocate( scheduleForm.end.data )
+			#Convert the string representations to Actual locations.
+			start = Location.from_str( start )
+			end = Location.from_str( end )
 
 			schedule = Schedule( 
 						scheduleForm.day.data, 
@@ -59,8 +64,15 @@ def schedule_add():
 						True, 
 						True, 
 						driver, 
+						start_str,
 						start,
+						end_str,
 						end )
+
+			save_route( schedule )
+
+			db.session.add( start )
+			db.session.add( end )
 			db.session.add( schedule )
 			db.session.commit()
 	

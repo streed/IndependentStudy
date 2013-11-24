@@ -1,5 +1,9 @@
 {% extends "driver/driver.html" %}
 {% block title %}Schedule: New One{% endblock %}
+{% block head %}
+	{{ super() }}
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+{% endblock %}
 {% block content %}
 <div class="container">
 	<div class="row">
@@ -8,10 +12,8 @@
 				<fieldset>
 					<legend>Schedule Information</legend>
 					{{ schedule.hidden_tag() }}
-					{{ schedule.start_str }}
-					{{ schedule.end_str }}
-					{{ schedule.start.label }}{{ schedule.start }}
-					{{ schedule.end.label }}{{ schedule.end }}
+					{{ schedule.start_str.label }}{{ schedule.start_str }}
+					{{ schedule.end_str.label }}{{ schedule.end_str }}
 					{{ schedule.day.label }}{{ schedule.day }}
 					{{ schedule.time.label }}{{ schedule.time }}
 					<button type="submit">Add new Schedule</button>
@@ -20,4 +22,56 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+{% block custom_javascript %}
+var geocoder = new google.maps.Geocoder();
+
+(function($) {
+	$( document ).ready( function() {
+		$("#start_str").blur( function( e ) {
+			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
+				if( result.length > 1 ) {
+					var t = "<select>";
+					for( var i in result ) {
+						loc = result[i].geometry.location;
+						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
+							result[i].formatted_address + "</option>";
+					}
+
+					t += "</select>";
+					$(t).insertAfter( "#start_str" );
+				} else {
+					var loc = result[0].geometry.location;
+					var lat = loc.ob;
+					var lng = loc.pb;
+					$("#start").val( lat + "," + lng )
+				}
+			});
+		});
+		$("#end_str").blur( function( e ) {
+			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
+				console.log( result );
+				//We got more than one value so we need to create
+				//a select to handle this situtaion so the user
+				//can choose which one.
+				if( result.length > 1 ) {
+					var t = "<select>";
+					for( var i in result ) {
+						loc = result[i].geometry.location;
+						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
+							result[i].formatted_address + "</option>";
+					}
+
+					t += "</select>";
+					$(t).insertAfter( "#end_str" );
+				} else {
+					var loc = result[0].geometry.location;
+					var lat = loc.ob;
+					var lng = loc.pb;
+					$("#end").val( lat + "," + lng )
+				}
+			});
+		});
+	});
+})(jQuery);
 {% endblock %}
