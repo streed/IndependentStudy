@@ -25,7 +25,7 @@ class Schedule( db.Model ):
 	#This will be a value between 0 and 6.
 	day = db.Column( db.Integer )
 
-	#This will be a value between 0 and 86400 (the minutes in a day)
+	#This will be a value between 0 and ( 24 * 60 ) / 30 intervals 30 minutes apart.
 	time = db.Column( db.Integer )
 
 	#When True this will be the in set schedule.
@@ -58,8 +58,8 @@ class Schedule( db.Model ):
 		self.end = end
 
 class ScheduleForm( Form ):
-	day = SelectField( 'Day', choices=[(0, "Monday"), ( 1, "Tuesday" ), ( 2, "Wednesday" ), ( 3, "Thursday" ), ( 4, "Friday" ), ( 5, "Saturday" ), ( 6, "Sunday" ) ], validators=[DataRequired()] )
-	time = IntegerField( 'Time', validators=[DataRequired()] )
+	day = SelectField( 'Day', coerce=int, choices=[(0, "Monday"), ( 1, "Tuesday" ), ( 2, "Wednesday" ), ( 3, "Thursday" ), ( 4, "Friday" ), ( 5, "Saturday" ), ( 6, "Sunday" ) ], validators=[DataRequired()] )
+	time = SelectField( 'Time', coerce=int, choices=[ ( i // 30, "%02d:%02d" % ( i // 60, i % 60 ) ) for i in range( 24 * 60 ) if i % 30 == 0], validators=[DataRequired()] )
 	start_str = TextField( "Start Location", validators=[DataRequired()] )
 	end_str = TextField( "End Location", validators=[DataRequired()] )
 	start = HiddenField( 'Start Location', validators=[DataRequired()] )

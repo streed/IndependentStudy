@@ -30,9 +30,11 @@ var geocoder = new google.maps.Geocoder();
 	$( document ).ready( function() {
 		$("#start_str").blur( function( e ) {
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
+				console.log( result );
 				if( result.length > 1 ) {
-					var t = "<select>";
+					var t = "<select id=\"start_select\">";
 					for( var i in result ) {
+						console.log( result[i] );
 						loc = result[i].geometry.location;
 						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
 							result[i].formatted_address + "</option>";
@@ -40,7 +42,19 @@ var geocoder = new google.maps.Geocoder();
 
 					t += "</select>";
 					$(t).insertAfter( "#start_str" );
-				} else {
+
+					$( "#start_select" ).change( function() {
+						var s = $("#start_select option:selected" ).text();
+						$( "#start_str" ).val( s );
+						geocoder.geocode( { "address": s }, function( result, stats ) {
+							var loc = result[0].geometry.location;
+							var lat = loc.ob;
+							var lng = loc.pb;
+							$("#start").val( lat + "," + lng );
+							$("#start_select").remove();
+						});
+					});
+				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
 					var lat = loc.ob;
 					var lng = loc.pb;
@@ -51,12 +65,10 @@ var geocoder = new google.maps.Geocoder();
 		$("#end_str").blur( function( e ) {
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
 				console.log( result );
-				//We got more than one value so we need to create
-				//a select to handle this situtaion so the user
-				//can choose which one.
 				if( result.length > 1 ) {
-					var t = "<select>";
+					var t = "<select id=\"end_select\">";
 					for( var i in result ) {
+						console.log( result[i] );
 						loc = result[i].geometry.location;
 						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
 							result[i].formatted_address + "</option>";
@@ -64,7 +76,19 @@ var geocoder = new google.maps.Geocoder();
 
 					t += "</select>";
 					$(t).insertAfter( "#end_str" );
-				} else {
+
+					$( "#end_select" ).change( function() {
+						var s = $("#end_select option:selected" ).text();
+						$( "#end_str" ).val( s );
+						geocoder.geocode( { "address": s }, function( result, stats ) {
+							var loc = result[0].geometry.location;
+							var lat = loc.ob;
+							var lng = loc.pb;
+							$("#end").val( lat + "," + lng );
+							$("#end_select").remove();
+						});
+					});
+				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
 					var lat = loc.ob;
 					var lng = loc.pb;

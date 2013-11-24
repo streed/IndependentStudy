@@ -11,3 +11,11 @@ class Location( db.Model ):
 		self.lat = lat
 		self.lng = lng
 
+	@classmethod
+	def from_str( cls, s ):
+		lat, lng = s.split( "," )
+
+		lat = float( lat )
+		lng = float( lng )
+
+		return Location( lat, lng )
