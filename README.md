@@ -6,9 +6,10 @@ This independent study is to design and implement a website with the following f
 - [x] Users can are by default designated as a Rider
 - [x] Users can, when they navigate to the Driver page, and are not a driver, will sign up to be a driver.
 - [x] Drivers can create a schedule of days, times, and locations they are available to drive.
-- [ ] Riders can request a ride.
-- [ ] The system will find them routes and schedules of drivers that closesly match the rider's request.
-- [ ] The rider can select their preferred route.
+- [x] Riders can request a ride.
+- [x] The system will find them routes and schedules of drivers that closesly match the rider's request.
+- [ ] The system will rank the routes based on how close they are to a specific route.
+- [x] The rider can select their preferred route.
 - [ ] The driver is notified of this choice.
 
 Implementation Details
