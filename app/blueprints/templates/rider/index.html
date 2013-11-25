@@ -88,10 +88,13 @@ function put_routes( s ) {
 
 		directions.route( request, function( result, status ) {
 			if( status == google.maps.DirectionsStatus.OK ) {
+			result.routes[0].legs[0].start_address += "<a href=\"/rider/" + s["driver_id"] + "/ride/accept\">Accept Ride</a>";
 				directionsDisplay = new google.maps.DirectionsRenderer();
 				directionsDisplay.setMap( map )
 				directionsDisplay.setDirections( result );
 				routes.push( directionsDisplay );
+
+				maps.setZoom( maps.getZoom() - 1 );
 			}
 		});
 	}
