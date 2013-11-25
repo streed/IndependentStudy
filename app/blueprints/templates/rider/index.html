@@ -8,6 +8,11 @@
 			height: 500px;
 			position: absolute;
 		}
+
+		.routeList {
+			position: absolute;
+			top: 600px;
+		}
 	</style>
 {% endblock %}
 {% block content %}
@@ -29,6 +34,7 @@
 
 		</div>
 		<div class="offset3 span8" id="map-canvas"></div>
+		<div class="routeList offset3 span8"></div>
 	</div>
 </div>
 {% endblock %}
@@ -74,8 +80,16 @@ function put_routes( s ) {
 		routes[i].setMap( null );
 	}
 	routes = [];
+	
+	var scheduleTable = "<table>";
 
 	for( var i = 0; i < schedules.length; i++ ) {
+		scheduleTable += "<tr><td>" + 
+					schedules[i]["driver_name"] + 
+				 "</td><td>" + 
+				 	schedules[i]["start_str"] + 
+				 "</td><td>" + schedules[i]["end_str"] + 
+				 "</td><td><a href=\"/rider/accept/" + schedules[i]["driver_id"] + "\">Accept</a></td></tr>";
 		var temp = s[i];
 		var start = new google.maps.LatLng( temp["start"][0], temp["start"][1] );
 		var end = new google.maps.LatLng( temp["end"][0], temp["end"][1] );
@@ -88,16 +102,16 @@ function put_routes( s ) {
 
 		directions.route( request, function( result, status ) {
 			if( status == google.maps.DirectionsStatus.OK ) {
-			result.routes[0].legs[0].start_address += "<a href=\"/rider/" + s["driver_id"] + "/ride/accept\">Accept Ride</a>";
 				directionsDisplay = new google.maps.DirectionsRenderer();
 				directionsDisplay.setMap( map )
 				directionsDisplay.setDirections( result );
 				routes.push( directionsDisplay );
-
 				maps.setZoom( maps.getZoom() - 1 );
 			}
 		});
 	}
+	scheduleTable += "</table>";
+	$(".routeList").append( scheduleTable );
 }
 function initialize() {
 	var mapOptions = {
