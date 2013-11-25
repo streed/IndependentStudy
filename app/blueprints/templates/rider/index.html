@@ -20,11 +20,9 @@
 					<label>Location:</label>
 					<input class="location" type="text" placeholder="Where are you?">
 
-					<label>Day:</label>
-					<input type="text" placeholder="What day?">
+					<label for="day">Day</label><select id="day" name="day"><option selected value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select>
 
-					<label>Time:</label>
-					<input type="text" placeholder="What time?">
+					<label for="time">Time</label><select id="time" name="time"><option selected value="0">00:00</option><option value="1">00:30</option><option value="2">01:00</option><option value="3">01:30</option><option value="4">02:00</option><option value="5">02:30</option><option value="6">03:00</option><option value="7">03:30</option><option value="8">04:00</option><option value="9">04:30</option><option value="10">05:00</option><option value="11">05:30</option><option value="12">06:00</option><option value="13">06:30</option><option value="14">07:00</option><option value="15">07:30</option><option value="16">08:00</option><option value="17">08:30</option><option value="18">09:00</option><option value="19">09:30</option><option value="20">10:00</option><option value="21">10:30</option><option value="22">11:00</option><option value="23">11:30</option><option value="24">12:00</option><option value="25">12:30</option><option value="26">13:00</option><option value="27">13:30</option><option value="28">14:00</option><option value="29">14:30</option><option value="30">15:00</option><option value="31">15:30</option><option value="32">16:00</option><option value="33">16:30</option><option value="34">17:00</option><option value="35">17:30</option><option value="36">18:00</option><option value="37">18:30</option><option value="38">19:00</option><option value="39">19:30</option><option value="40">20:00</option><option value="41">20:30</option><option value="42">21:00</option><option value="43">21:30</option><option value="44">22:00</option><option value="45">22:30</option><option value="46">23:00</option><option value="47">23:30</option></select>
 					<!--<div class="input-append datepicker" data-date="12-12-2013" data-date-format="dd-mm-yyyy">
 						<input class="span2" size=16 type="text" value="12-12-2013">
 					</div>-->
@@ -51,7 +49,9 @@ var you;
 				var loc = result[0].geometry.location;
 				var lat = loc.ob;
 				var lng = loc.pb;
-				$.get( "/rider/routes/" + lat + "/" + lng, function( data, status ) {
+				var day = $("#day option:selected").val()
+				var time = $("#time option:selected").val()
+				$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
 					schedules = $.parseJSON( data );
 					put_routes( schedules );
 				});

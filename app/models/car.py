@@ -11,7 +11,7 @@ class Car( db.Model ):
 	make = db.Column( db.String( 80 ) )
 
 	#TODO: Switch this to a key into another table.
-	model = db.Column( db.String( 80 ), unique=True )
+	model = db.Column( db.String( 80 ) )
 
 	#TODO: Make this better than it is.
 	color = db.Column( db.String( 80 ) )

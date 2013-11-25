@@ -14,11 +14,11 @@ from ..models.schedule import Schedule
 def index():
 	return render_template( "rider/index.html", schedules=[] )
 
-@rider.route( "/routes/<lat>/<lng>" )
+@rider.route( "/routes/<lat>/<lng>/<day>/<time>" )
 @login_required
 @roles_accepted( "Rider" )
-def get_routes( lat, lng ):
-	schedules = get_ranked_schedules( lat, lng )
+def get_routes( lat, lng, day, time ):
+	schedules = get_ranked_schedules( lat, lng, day, time )
 	scheds = []
 	for s in schedules:
 		scheds.append( { "driver_id": s.driver.id, "start": [ s.start.lat, s.start.lng ], "end": [ s.end.lat, s.end.lng ] } )

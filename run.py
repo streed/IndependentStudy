@@ -17,6 +17,7 @@ if __name__ == "__main__":
 			db.drop_all()
 			db.create_all()
 			db.create_default_roles()
+		elif( sys.argv[1] == "create_data" ):
 			db.create_some_example_data()
 	else:
 		app.run( debug=True )

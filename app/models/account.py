@@ -22,7 +22,7 @@ class Account( db.Model, UserMixin ):
 	password = db.Column( db.String( 80 ) )
 	name = db.Column( db.String( 80 ) )
 	age = db.Column( db.Integer )
-	phoneNumber = db.Column( db.String( 80 ) )
+	phone_number = db.Column( db.String( 80 ) )
 	active = db.Column( db.Boolean() )
 	confirmed_at = db.Column( db.DateTime() )
 

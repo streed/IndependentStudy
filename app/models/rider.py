@@ -10,7 +10,7 @@ class Rider( db.Model ):
 	#Profile Information
 	account_id = db.Column( db.Integer, db.ForeignKey( "account.id" ) )
 	
-	account = db.relationship( "Account", backref=db.backref( "driver", lazy="dynamic" ) )
+	account = db.relationship( "Account", backref=db.backref( "rider", lazy="dynamic" ) )
 
 	def __init__( self, account ):
 		self.account = account

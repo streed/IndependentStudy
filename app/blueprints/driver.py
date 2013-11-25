@@ -18,7 +18,9 @@ driver = Blueprint( "driver", __name__, template_folder="templates" )
 @login_required
 def index():
 	if( current_user.has_role( "Driver" ) ):
-		return render_template( "driver/index.html" )
+		
+		requests = []
+		return render_template( "driver/index.html", requests=requests )
 	else:
 		carForm = CarForm()
 		if( carForm.validate_on_submit() ):
@@ -80,4 +82,5 @@ def schedule_add():
 	else:
 		errors( scheduleForm )
 		return render_template( "driver/schedule_new.html", schedule=scheduleForm )
+
 
