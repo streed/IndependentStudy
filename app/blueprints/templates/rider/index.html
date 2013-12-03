@@ -53,7 +53,6 @@ var selected = false;
 		
 		$(".location").blur( function( e ) {
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
-				console.log( result.length );
 				if( result.length > 1 && !selected ) {
 					var t = "<select id=\"location_multi\">";
 					for( var i in result ) {
@@ -136,7 +135,7 @@ function put_routes( s ) {
 				directionsDisplay.setMap( map )
 				directionsDisplay.setDirections( result );
 				routes.push( directionsDisplay );
-				maps.setZoom( maps.getZoom() - 1 );
+				//map.setZoom( map.getZoom() - 1 );
 			}
 		});
 	}
