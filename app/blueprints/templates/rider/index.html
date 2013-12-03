@@ -46,31 +46,59 @@ var directions = new google.maps.DirectionsService();
 var geocoder = new google.maps.Geocoder();
 var directionsDisplay;
 var you;
+var selected = false;
 (function($) {
 	$( document ).ready( function() {
 		//$(".datepicker").datepicker();
 		
 		$(".location").blur( function( e ) {
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
-				var loc = result[0].geometry.location;
-				var lat = loc.ob;
-				var lng = loc.pb;
-				var day = $("#day option:selected").val()
-				var time = $("#time option:selected").val()
-				$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
-					schedules = $.parseJSON( data );
-					put_routes( schedules );
-				});
+				console.log( result.length );
+				if( result.length > 1 && !selected ) {
+					var t = "<select id=\"location_multi\">";
+					for( var i in result ) {
+						loc = result[i].geometry.location;
+						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
+							result[i].formatted_address + "</option>";
+					}
 
-				if( you ) {
-					you.setMap( null );
+					t += "</select>";
+					$(t).insertAfter( ".location" );
+
+					$( "#location_multi" ).change( function() {
+						var s = $("#location_multi option:selected" ).text();
+						$( ".location" ).val( s );
+						$( ".location" ).blur();
+						geocoder.geocode( { "address": s }, function( result, stats ) {
+							$("#location_multi").remove();
+						});
+						selected = true;
+					});
+					$("#location_multi").blur( function() {
+						$(this).remove();
+					});
+				} else if( result.length == 1 || selected ) {
+					selected = false;
+					var loc = result[0].geometry.location;
+					var lat = loc.ob;
+					var lng = loc.pb;
+					var day = $("#day option:selected").val()
+					var time = $("#time option:selected").val()
+					$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
+						schedules = $.parseJSON( data );
+						put_routes( schedules );
+					});
+
+					if( you ) {
+						you.setMap( null );
+					}
+
+					you = new google.maps.Marker({
+						position: new google.maps.LatLng( lat, lng ),
+						map: map,
+						title: "You"
+					});
 				}
-
-				you = new google.maps.Marker({
-					position: new google.maps.LatLng( lat, lng ),
-					map: map,
-					title: "You"
-				});
 			});
 		});
 	});
@@ -80,8 +108,10 @@ function put_routes( s ) {
 		routes[i].setMap( null );
 	}
 	routes = [];
+
+	$("#schedules").remove();
 	
-	var scheduleTable = "<table>";
+	var scheduleTable = "<table id=\"schedules\">";
 
 	for( var i = 0; i < schedules.length; i++ ) {
 		scheduleTable += "<tr><td>" + 
