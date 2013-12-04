@@ -24,6 +24,7 @@
 </div>
 {% endblock %}
 {% block custom_javascript %}
+<script type="javascript">
 var geocoder = new google.maps.Geocoder();
 
 (function($) {
@@ -102,4 +103,5 @@ var geocoder = new google.maps.Geocoder();
 		});
 	});
 })(jQuery);
+</script>
 {% endblock %}

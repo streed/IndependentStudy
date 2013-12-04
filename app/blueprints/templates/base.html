@@ -40,11 +40,11 @@
 		</div>
 		<div id="content">
 			{% block errors %}
-				{% with messages = get_flashed_messages() %}
+				{% with messages = get_flashed_messages( with_categories=True ) %}
 					{% if messages %}
 					<div class="container">
-						{% for m in messages %}
-							<div class='alert alert-error'>{{ m }}</div>
+						{% for c, m in messages %}
+							<div class='alert alert-{{ c }}'>{{ m }}</div>
 						{% endfor %}
 					</div>
 					{% endif %}
@@ -63,9 +63,7 @@
 	</div>
 </html>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javascript">
 {% block custom_javascript %}
 {% endblock %}
-</script>
 
 

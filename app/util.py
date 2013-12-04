@@ -9,7 +9,7 @@ from scipy import spatial
 
 def errors( form ):
 	for f, e in form.errors.items():
-		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ) )
+		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ), "error" )
 
 def save_route( schedule ):
 	pass
