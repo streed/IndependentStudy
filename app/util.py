@@ -27,7 +27,6 @@ def save_route( schedule ):
 
 	data = data.decode( "utf-8" )
 
-	print( schedule )
 	with open( os.path.join( os.path.dirname( __file__ ), "..", "routes", "%d.json" % ( schedule.id ) ), "w" ) as f:
 		f.write( data )
 	
@@ -63,7 +62,6 @@ def rank_routes( routes, client=[], num=3 ):
 
 		closest = tree.query( loc, k=num )
 		indexes = closest[1]	
-		print( indexes )
 		return list( set( [ route_ids[i] for i in indexes ] ) )
 
 def ranked_routes( slat, slng, elat, elng, day, time, num=3 ):
