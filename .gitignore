@@ -43,3 +43,6 @@ localenv/*
 
 #Nodejs
 node_modules/*
+
+#Routes
+routes/*.json

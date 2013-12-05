@@ -1,3 +1,6 @@
+import os
+import json
+import subprocess
 from flask import flash
 
 from .models.schedule import Schedule
@@ -12,8 +15,22 @@ def errors( form ):
 		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ), "error" )
 
 def save_route( schedule ):
-	pass
+	path = os.path.join( os.path.dirname( __file__ ), "..", "util", "google_routes.js" )
 
+	start = schedule.start
+	end = schedule.end
+	param = [ "node", path, "\"%s\"" % ( " ".join( [ str( start.lat ), str( start.lng ), str( end.lat ), str( end.lng ) ] ) ) ]
+
+	param = " ".join( param )
+
+	data =  subprocess.check_output( param, shell=True )
+
+	data = data.decode( "utf-8" )
+
+	print( schedule )
+	with open( os.path.join( os.path.dirname( __file__ ), "..", "routes", "%d.json" % ( schedule.id ) ), "w" ) as f:
+		f.write( data )
+	
 def rank_routes( client ):
 	#Read in the data file, for now just out.json, should 
 	#read in from STDIN to pipe everything together nicely.

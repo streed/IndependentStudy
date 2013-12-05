@@ -70,12 +70,13 @@ def schedule_add():
 					end_str,
 					end )
 
-		save_route( schedule )
 
 		db.session.add( start )
 		db.session.add( end )
 		db.session.add( schedule )
 		db.session.commit()
+
+		save_route( schedule )
 
 		return redirect( "/driver/schedule" )
 	else:
