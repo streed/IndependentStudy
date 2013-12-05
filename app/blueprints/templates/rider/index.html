@@ -205,18 +205,17 @@ function put_routes( s ) {
 		routes[i].setMap( null );
 	}
 	routes = [];
-
 	$("#schedules").remove();
 	
 	var scheduleTable = "<table class=\"routes table table-striped table-bordered\"><thead>" +
 			"<tr><th>Driver Name</th><th>Start Location</th><th>End Location</th><th>Action</th></tr></thead><tbody>";
-	for( var i = 0; i < schedules.length; i++ ) {
+	for( var i = 0; i < s.length; i++ ) {
 		scheduleTable += "<tr><td>" + 
-					schedules[i]["driver_name"] + 
+					s[i]["driver_name"] + 
 				 "</td><td>" + 
-				 	schedules[i]["start_str"] + 
-				 "</td><td>" + schedules[i]["end_str"] + 
-				 "</td><td><a href=\"/rider/accept/" + schedules[i]["driver_id"] + "\">Accept</a></td></tr>";
+				 	s[i]["start_str"] + 
+				 "</td><td>" + s[i]["end_str"] + 
+				 "</td><td><a href=\"/rider/accept/" + s[i]["driver_id"] + "\">Accept</a></td></tr>";
 		var temp = s[i];
 		var start = new google.maps.LatLng( temp["start"][0], temp["start"][1] );
 		var end = new google.maps.LatLng( temp["end"][0], temp["end"][1] );
@@ -226,6 +225,8 @@ function put_routes( s ) {
 			destination: end,
 			travelMode: google.maps.TravelMode.DRIVING
 		};
+
+		console.log( "Request: ", request );
 
 		directions.route( request, function( result, status ) {
 			if( status == google.maps.DirectionsStatus.OK ) {

@@ -17,6 +17,14 @@ def _compact( l ):
 			r.append( i )
 	return r
 
+def _stable_diff( a, b ):
+	r = []
+	for i in a:
+		if( i in b ):
+			r.append( i )
+
+	return r
+
 def errors( form ):
 	for f, e in form.errors.items():
 		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ), "error" )
@@ -62,14 +70,24 @@ def rank_routes( routes, client=[], num=3 ):
 	#Build the tree using the GPS coordinates.
 	tree = spatial.cKDTree( steps_locs )
 
-	#Begin the finding of the points that are of interest.
-	steps = {}
+	#Begin the finding of the points that are of interest
+	pts = []
 	for s in client:
-		loc = np.array( [ s[0], s[1] ] )
+		loc = np.array( s )
 
 		closest = tree.query( loc, k=num )
 		indexes = closest[1]	
-		return _compact( [ route_ids[i] for i in indexes ] )
+		pts.append( _compact( [ route_ids[i] for i in indexes ] ) )
+
+	#Ok we got all valid points that could be around the start
+	#and end points. Let's find the routes that around both start and end.
+	s = pts[0]
+	for p in pts[1:]:
+		s = _stable_diff( s, p )
+
+	#S contains the intersection of the resultant sets
+	#from both the start points and end points.
+	return list( s )
 
 def ranked_routes( slat, slng, elat, elng, day, time, num=3 ):
 	#Get the ones near by the end point, this can be done in sql.
@@ -77,21 +95,12 @@ def ranked_routes( slat, slng, elat, elng, day, time, num=3 ):
 	ids = [ s.id for s in  Schedule.query.filter_by( day=day, time=time ).all() ]
 
 	if( ids ):
-		return rank_routes( ids, client=[ [ slat, slng ] ], num=num )
+		return rank_routes( ids, client=[ [ slat, slng ], [ elat, elng ] ], num=num )
 	else:
 		return None
 
 
 def get_ranked_schedules( slat, slng, elat, elng, day, time ):
-	loc = ( slat, slng, elat, elng, day, time )
-
-	if( not loc in _routes ):
-		ret = ranked_routes( slat, slng, elat, elng, day, time )
-		if( ret ):
-			_routes[loc] = ret
-			return _routes[loc]
-		else:
-			return []
-	else:
-		return _routes[loc]
+	ret = ranked_routes( slat, slng, elat, elng, day, time )
+	return ret
 

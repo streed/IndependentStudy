@@ -56,7 +56,6 @@ def get_routes( slat, slng, elat, elng, day, time ):
 	scheds = []
 	for s in schedules:
 		_s = Schedule.query.filter_by( id=s ).first()
-
 		scheds.append( _s )
 
 	ret = []
