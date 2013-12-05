@@ -10,6 +10,13 @@ _routes = {}
 import numpy as np
 from scipy import spatial
 
+def _compact( l ):
+	r = []
+	for i in l:
+		if( i not in r ):
+			r.append( i )
+	return r
+
 def errors( form ):
 	for f, e in form.errors.items():
 		flash( "%s %s" % ( getattr( form, f ).label.text, ",".join( e ) ), "error" )
@@ -62,7 +69,7 @@ def rank_routes( routes, client=[], num=3 ):
 
 		closest = tree.query( loc, k=num )
 		indexes = closest[1]	
-		return list( set( [ route_ids[i] for i in indexes ] ) )
+		return _compact( [ route_ids[i] for i in indexes ] )
 
 def ranked_routes( slat, slng, elat, elng, day, time, num=3 ):
 	#Get the ones near by the end point, this can be done in sql.
