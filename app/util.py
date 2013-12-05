@@ -5,7 +5,7 @@ from flask import flash
 
 from .models.schedule import Schedule
 
-routes = {}
+_routes = {}
 
 import numpy as np
 from scipy import spatial
@@ -31,52 +31,62 @@ def save_route( schedule ):
 	with open( os.path.join( os.path.dirname( __file__ ), "..", "routes", "%d.json" % ( schedule.id ) ), "w" ) as f:
 		f.write( data )
 	
-def rank_routes( client ):
+def rank_routes( routes, client=[], num=3 ):
 	#Read in the data file, for now just out.json, should 
 	#read in from STDIN to pipe everything together nicely.
-	data = json.load( open( sys.argv[1] ) )
-	client_points = [ client ]
-
-	routes = data["routes"]
-
-	#KDTree expects a numpy.array so convert the points list into
-	#a numpy.array for use with the KDTree
 	route_ids = []
 	route_id = 0
 	steps_locs = []
-	for steps in routes:
-		route_ids += [ route_id ] * len( steps["steps"] )
-		steps_locs += [ [ p["loc"]["lat"], p["loc"]["lng"] ] for p in steps["steps"] ]
+	rs = {}
+	for r in routes:
+		f = os.path.join( os.path.dirname( __file__ ), "..", "routes", "%d.json" % r )
+		data = json.load( open( f ) )
+		rs[r] =  data["routes"][0]
 
-		route_id += 1
+		routes = data["routes"]
+
+		#KDTree expects a numpy.array so convert the points list into
+		#a numpy.array for use with the KDTree
+		for steps in routes:
+			route_ids += [ r ] * len( steps["steps"] )
+			steps_locs += [ [ p["loc"]["lat"], p["loc"]["lng"] ] for p in steps["steps"] ]
 
 	steps_locs = np.array( steps_locs )
-
-	print( "Number of steps:", len( steps_locs ) )
 
 	#Build the tree using the GPS coordinates.
 	tree = spatial.cKDTree( steps_locs )
 
 	#Begin the finding of the points that are of interest.
 	steps = {}
-	for s in client_points:
+	for s in client:
 		loc = np.array( [ s[0], s[1] ] )
 
-		closest = tree.query( loc, k=2 )
+		closest = tree.query( loc, k=num )
 		indexes = closest[1]	
-		steps["%f %f" % ( s[0], s[1] )] = list( set( [ routes[route_ids[i]]["gps"] for i in indexes ] ) )
-
-	return steps
+		print( indexes )
+		return list( set( [ route_ids[i] for i in indexes ] ) )
 
 def ranked_routes( slat, slng, elat, elng, day, time, num=3 ):
-	return Schedule.query.filter_by( day=day, time=time ).all()
+	#Get the ones near by the end point, this can be done in sql.
+	#Take the start point and pass it to rank_routes
+	ids = [ s.id for s in  Schedule.query.filter_by( day=day, time=time ).all() ]
+
+	if( ids ):
+		return rank_routes( ids, client=[ [ slat, slng ] ], num=num )
+	else:
+		return None
 
 
 def get_ranked_schedules( slat, slng, elat, elng, day, time ):
 	loc = ( slat, slng, elat, elng, day, time )
 
-	if( not loc in routes ):
-		routes[loc] = ranked_routes( slat, slng, elat, elng, day, time )
-
-	return routes[loc]
+	if( not loc in _routes ):
+		ret = ranked_routes( slat, slng, elat, elng, day, time )
+		if( ret ):
+			_routes[loc] = ret
+			return _routes[loc]
+		else:
+			return []
+	else:
+		return _routes[loc]
 

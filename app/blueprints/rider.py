@@ -55,12 +55,18 @@ def get_routes( slat, slng, elat, elng, day, time ):
 	schedules = get_ranked_schedules( slat, slng, elat, elng, day, time )
 	scheds = []
 	for s in schedules:
-		scheds.append( { "driver_name": s.driver.account.name, 
+		_s = Schedule.query.filter_by( id=s ).first()
+
+		scheds.append( _s )
+
+	ret = []
+	for s in scheds:
+		ret.append( { "driver_name": s.driver.account.name, 
 				 "driver_id": s.driver.id, 
 				 "start_str": s.start_str,
 				 "end_str": s.end_str,
 				 "start": [ s.start.lat, s.start.lng ], 
 				 "end": [ s.end.lat, s.end.lng ] } )
 
-	return json.dumps( scheds )
+	return json.dumps( ret )
 
