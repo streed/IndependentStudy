@@ -48,11 +48,11 @@ def accept( id ):
 
 	return redirect( "/rider" )
 
-@rider.route( "/routes/<lat>/<lng>/<day>/<time>" )
+@rider.route( "/routes/<slat>/<slng>/<elat>/<elng>/<int:day>/<int:time>" )
 @login_required
 @roles_accepted( "Rider" )
-def get_routes( lat, lng, day, time ):
-	schedules = get_ranked_schedules( lat, lng, day, time )
+def get_routes( slat, slng, elat, elng, day, time ):
+	schedules = get_ranked_schedules( slat, slng, elat, elng, day, time )
 	scheds = []
 	for s in schedules:
 		scheds.append( { "driver_name": s.driver.account.name, 

@@ -33,7 +33,7 @@
 					<!--<div class="input-append datepicker" data-date="12-12-2013" data-date-format="dd-mm-yyyy">
 						<input class="span2" size=16 type="text" value="12-12-2013">
 					</div>-->
-
+					<button type="button" class="search">Find Ride</button>
 		</div>
 		<div class="offset3 span8" id="map-canvas"></div>
 		<div class="routeList offset3 span8"></div>
@@ -51,6 +51,8 @@ var directionsDisplay;
 var you;
 var end;
 var selected = false;
+var start_loc = [];
+var end_loc = [];
 (function($) {
 	$( document ).ready( function() {
 		//$(".datepicker").datepicker();
@@ -87,12 +89,6 @@ var selected = false;
 					var loc = result[0].geometry.location;
 					var lat = loc.pb;
 					var lng = loc.qb;
-					var day = $("#day option:selected").val()
-					var time = $("#time option:selected").val()
-					$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
-						schedules = $.parseJSON( data );
-						put_routes( schedules );
-					});
 
 					if( you ) {
 						you.setMap( null );
@@ -103,6 +99,8 @@ var selected = false;
 						map: map,
 						title: "You"
 					});
+
+					start_loc = [ lat, lng ];
 				}
 			});
 		});
@@ -140,12 +138,6 @@ var selected = false;
 					var loc = result[0].geometry.location;
 					var lat = loc.pb;
 					var lng = loc.qb;
-					var day = $("#day option:selected").val()
-					var time = $("#time option:selected").val()
-					$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
-						schedules = $.parseJSON( data );
-						put_routes( schedules );
-					});
 
 					if( end ) {
 						end.setMap( null );
@@ -156,11 +148,28 @@ var selected = false;
 						map: map,
 						title: "Going to."
 					});
+
+					end_loc = [ lat, lng ];
 				}
 			});
 		});
+
+		$(".search" ).click( function() {
+			console.log( "getting routes" );
+			get_routes();
+		});
 	});
 })(jQuery);
+function get_routes() {
+	if( start_loc.length > 0 && end_loc.length > 0 ) {
+		var day = $("#day option:selected").val()
+		var time = $("#time option:selected").val()
+		$.get( "/rider/routes/" + start_loc[0] + "/" + start_loc[1] + "/" + end_loc[0] + "/" + end_loc[1] + "/" + day + "/" + time, function( data, status ) {
+			schedules = $.parseJSON( data );
+			put_routes( schedules );
+		});
+	}
+}
 function put_routes( s ) {
 	for( var i = 0; i < routes.length; i++ ) {
 		routes[i].setMap( null );

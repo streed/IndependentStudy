@@ -51,15 +51,15 @@ def rank_routes( client ):
 
 	return steps
 
-def ranked_routes( lat, lng, day, time, num=3 ):
+def ranked_routes( slat, slng, elat, elng, day, time, num=3 ):
 	return Schedule.query.filter_by( day=day, time=time ).all()
 
 
-def get_ranked_schedules( lat, lng, day, time ):
-	loc = ( lat, lng, day, time )
+def get_ranked_schedules( slat, slng, elat, elng, day, time ):
+	loc = ( slat, slng, elat, elng, day, time )
 
 	if( not loc in routes ):
-		routes[loc] = ranked_routes( lat, lng, day, time )
+		routes[loc] = ranked_routes( slat, slng, elat, elng, day, time )
 
 	return routes[loc]
 
