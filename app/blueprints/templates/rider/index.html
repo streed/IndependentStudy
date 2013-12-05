@@ -30,9 +30,6 @@
 					<label for="day">Day</label><select id="day" name="day"><option selected value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select>
 
 					<label for="time">Time</label><select id="time" name="time"><option selected value="0">00:00</option><option value="1">00:30</option><option value="2">01:00</option><option value="3">01:30</option><option value="4">02:00</option><option value="5">02:30</option><option value="6">03:00</option><option value="7">03:30</option><option value="8">04:00</option><option value="9">04:30</option><option value="10">05:00</option><option value="11">05:30</option><option value="12">06:00</option><option value="13">06:30</option><option value="14">07:00</option><option value="15">07:30</option><option value="16">08:00</option><option value="17">08:30</option><option value="18">09:00</option><option value="19">09:30</option><option value="20">10:00</option><option value="21">10:30</option><option value="22">11:00</option><option value="23">11:30</option><option value="24">12:00</option><option value="25">12:30</option><option value="26">13:00</option><option value="27">13:30</option><option value="28">14:00</option><option value="29">14:30</option><option value="30">15:00</option><option value="31">15:30</option><option value="32">16:00</option><option value="33">16:30</option><option value="34">17:00</option><option value="35">17:30</option><option value="36">18:00</option><option value="37">18:30</option><option value="38">19:00</option><option value="39">19:30</option><option value="40">20:00</option><option value="41">20:30</option><option value="42">21:00</option><option value="43">21:30</option><option value="44">22:00</option><option value="45">22:30</option><option value="46">23:00</option><option value="47">23:30</option></select>
-					<!--<div class="input-append datepicker" data-date="12-12-2013" data-date-format="dd-mm-yyyy">
-						<input class="span2" size=16 type="text" value="12-12-2013">
-					</div>-->
 					<button type="button" class="search">Find Ride</button>
 		</div>
 		<div class="offset3 span8" id="map-canvas"></div>
@@ -55,37 +52,53 @@ var start_loc = [];
 var end_loc = [];
 (function($) {
 	$( document ).ready( function() {
-		//$(".datepicker").datepicker();
 		$(".where").blur( function( e ) {
 			$(".where_multi").remove();
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
-				if( result.length > 1 && !selected ) {
-					var t = "<select id=\.where_multi\">";
-					$(".where").val( result[0].formatted_address );
+				if( result.length > 1 ) {
+					var t = "<select class=\"where_multi\"><option>Select Your Location</option>";
 					var loc = result[0].geometry.location;
-					for( var i in result ) {
+					var i = 0;
+					var add = true;
+					for( i in result ) {
 						loc = result[i].geometry.location;
-						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
+						if( $(".where" ).val() == result[i].formatted_address ) {
+							add = false;
+							break;
+						}
+						t += "<option value=\"" + loc.pb + "," + loc.qb  + "\">" +
 							result[i].formatted_address + "</option>";
 					}
 
 					t += "</select>";
-					$(t).insertAfter( ".where" );
 
-					$( ".where_multi" ).change( function() {
-						var s = $(".where_multi option:selected" ).text();
-						$( ".where" ).val( s );
-						$( ".where" ).blur();
-						geocoder.geocode( { "address": s }, function( result, stats ) {
-							$(".where_multi").remove();
+					if( add ) {
+						$(t).insertAfter( ".where" );
+
+						$( ".where_multi" ).change( function() {
+							var s = $(".where_multi option:selected" ).text();
+							$( ".where" ).val( s );
+							$( ".where" ).blur();
+							$(this).remove();
 						});
-						selected = true;
-					});
-					$(".where_multi").blur( function() {
-						$(this).remove();
-					});
-				} else if( result.length == 1 || selected ) {
-					selected = false;
+					} else {
+						var loc = result[i].geometry.location;
+						var lat = loc.pb;
+						var lng = loc.qb;
+
+						if( you ) {
+							you.setMap( null );
+						}
+
+						you = new google.maps.Marker({
+							position: new google.maps.LatLng( lat, lng ),
+							map: map,
+							title: "You"
+						});
+
+						start_loc = [ lat, lng ];
+					}
+				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
 					var lat = loc.pb;
 					var lng = loc.qb;
@@ -108,33 +121,50 @@ var end_loc = [];
 		$(".end_location").blur( function( e ) {
 			$(".end_location_multi").remove();
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
-				if( result.length > 1 && !selected ) {
-					var t = "<select id=\"end_location_multi\">";
-					$(".end_location").val( result[0].formatted_address );
+				if( result.length > 1 ) {
+					var t = "<select class=\"end_location_multi\"><option>Select Your Location</option>";
 					var loc = result[0].geometry.location;
-					for( var i in result ) {
-						loc = result[i].geometry.end_location;
-						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
+					var add = true;
+					var i = 0;
+					for( i in result ) {
+						loc = result[i].geometry.location;
+						if( $(".end_location" ).val() == result[i].formatted_address ) {
+							add = false;
+							break;
+						}
+						t += "<option value=\"" + loc.pb + "," + loc.qb  + "\">" +
 							result[i].formatted_address + "</option>";
 					}
 
 					t += "</select>";
-					$(t).insertAfter( ".end_location" );
 
-					$( ".end_location_multi" ).change( function() {
-						var s = $(".end_location_multi option:selected" ).text();
-						$( ".end_location" ).val( s );
-						$( ".end_location" ).blur();
-						geocoder.geocode( { "address": s }, function( result, stats ) {
-							$(".end_location_multi").remove();
+					if( add ) {
+						$(t).insertAfter( ".end_location" );
+
+						$( ".end_location_multi" ).change( function() {
+							var s = $(".end_location_multi option:selected" ).text();
+							$( ".end_location" ).val( s );
+							$( ".end_location" ).blur();
+							$(this).remove();
 						});
-						selected = true;
-					});
-					$(".end_location_multi").blur( function() {
-						$(this).remove();
-					});
-				} else if( result.length == 1 || selected ) {
-					selected = false;
+					} else { 
+						var loc = result[i].geometry.location;
+						var lat = loc.pb;
+						var lng = loc.qb;
+
+						if( end ) {
+							end.setMap( null );
+						}
+
+						end = new google.maps.Marker({
+							position: new google.maps.LatLng( lat, lng ),
+							map: map,
+							title: "Going to."
+						});
+
+						end_loc = [ lat, lng ];
+					}
+				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
 					var lat = loc.pb;
 					var lng = loc.qb;
@@ -203,7 +233,6 @@ function put_routes( s ) {
 				directionsDisplay.setMap( map )
 				directionsDisplay.setDirections( result );
 				routes.push( directionsDisplay );
-				//map.setZoom( map.getZoom() - 1 );
 			}
 		});
 	}
