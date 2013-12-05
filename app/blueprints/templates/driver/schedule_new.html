@@ -48,8 +48,8 @@ var geocoder = new google.maps.Geocoder();
 						$( "#start_str" ).val( s );
 						geocoder.geocode( { "address": s }, function( result, stats ) {
 							var loc = result[0].geometry.location;
-							var lat = loc.ob;
-							var lng = loc.pb;
+							var lat = loc.pb;
+							var lng = loc.qb;
 							$("#start").val( lat + "," + lng );
 							$("#start_select").remove();
 						});
@@ -59,8 +59,9 @@ var geocoder = new google.maps.Geocoder();
 					});
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
-					var lat = loc.ob;
-					var lng = loc.pb;
+					console.log( loc );
+					var lat = loc.pb;
+					var lng = loc.qb;
 					$("#start").val( lat + "," + lng )
 				}
 			});
@@ -84,8 +85,8 @@ var geocoder = new google.maps.Geocoder();
 						$( "#end_str" ).val( s );
 						geocoder.geocode( { "address": s }, function( result, stats ) {
 							var loc = result[0].geometry.location;
-							var lat = loc.ob;
-							var lng = loc.pb;
+							var lat = loc.pb;
+							var lng = loc.qb;
 							$("#end").val( lat + "," + lng );
 							$("#end_select").remove();
 						});
@@ -95,8 +96,8 @@ var geocoder = new google.maps.Geocoder();
 					});
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
-					var lat = loc.ob;
-					var lng = loc.pb;
+					var lat = loc.pb;
+					var lng = loc.qb;
 					$("#end").val( lat + "," + lng )
 				}
 			});

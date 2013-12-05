@@ -22,8 +22,10 @@
 			<fieldset>
 				<legend>Search for a ride</legend>
 				<form>
-					<label>Location:</label>
-					<input class="location" type="text" placeholder="Where are you?">
+					<label>Where are you?</label>
+					<input class="where" type="text" placeholder="Where are you?">
+					<label>Destination:</label>
+					<input class="end_location" type="text" placeholder="Where are you going?">
 
 					<label for="day">Day</label><select id="day" name="day"><option selected value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select>
 
@@ -39,7 +41,7 @@
 </div>
 {% endblock %}
 {% block custom_javascript %}
-<script type="javascript">
+<script>
 var schedules = [];
 var routes = [];
 var map;
@@ -47,15 +49,18 @@ var directions = new google.maps.DirectionsService();
 var geocoder = new google.maps.Geocoder();
 var directionsDisplay;
 var you;
+var end;
 var selected = false;
 (function($) {
 	$( document ).ready( function() {
 		//$(".datepicker").datepicker();
-		
-		$(".location").blur( function( e ) {
+		$(".where").blur( function( e ) {
+			$(".where_multi").remove();
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
 				if( result.length > 1 && !selected ) {
-					var t = "<select id=\"location_multi\">";
+					var t = "<select id=\.where_multi\">";
+					$(".where").val( result[0].formatted_address );
+					var loc = result[0].geometry.location;
 					for( var i in result ) {
 						loc = result[i].geometry.location;
 						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
@@ -63,25 +68,25 @@ var selected = false;
 					}
 
 					t += "</select>";
-					$(t).insertAfter( ".location" );
+					$(t).insertAfter( ".where" );
 
-					$( "#location_multi" ).change( function() {
-						var s = $("#location_multi option:selected" ).text();
-						$( ".location" ).val( s );
-						$( ".location" ).blur();
+					$( ".where_multi" ).change( function() {
+						var s = $(".where_multi option:selected" ).text();
+						$( ".where" ).val( s );
+						$( ".where" ).blur();
 						geocoder.geocode( { "address": s }, function( result, stats ) {
-							$("#location_multi").remove();
+							$(".where_multi").remove();
 						});
 						selected = true;
 					});
-					$("#location_multi").blur( function() {
+					$(".where_multi").blur( function() {
 						$(this).remove();
 					});
 				} else if( result.length == 1 || selected ) {
 					selected = false;
 					var loc = result[0].geometry.location;
-					var lat = loc.ob;
-					var lng = loc.pb;
+					var lat = loc.pb;
+					var lng = loc.qb;
 					var day = $("#day option:selected").val()
 					var time = $("#time option:selected").val()
 					$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
@@ -97,6 +102,59 @@ var selected = false;
 						position: new google.maps.LatLng( lat, lng ),
 						map: map,
 						title: "You"
+					});
+				}
+			});
+		});
+		
+		$(".end_location").blur( function( e ) {
+			$(".end_location_multi").remove();
+			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
+				if( result.length > 1 && !selected ) {
+					var t = "<select id=\"end_location_multi\">";
+					$(".end_location").val( result[0].formatted_address );
+					var loc = result[0].geometry.location;
+					for( var i in result ) {
+						loc = result[i].geometry.end_location;
+						t += "<option value=\"" + loc.ob + "," + loc.pb  + "\">" +
+							result[i].formatted_address + "</option>";
+					}
+
+					t += "</select>";
+					$(t).insertAfter( ".end_location" );
+
+					$( ".end_location_multi" ).change( function() {
+						var s = $(".end_location_multi option:selected" ).text();
+						$( ".end_location" ).val( s );
+						$( ".end_location" ).blur();
+						geocoder.geocode( { "address": s }, function( result, stats ) {
+							$(".end_location_multi").remove();
+						});
+						selected = true;
+					});
+					$(".end_location_multi").blur( function() {
+						$(this).remove();
+					});
+				} else if( result.length == 1 || selected ) {
+					selected = false;
+					var loc = result[0].geometry.location;
+					var lat = loc.pb;
+					var lng = loc.qb;
+					var day = $("#day option:selected").val()
+					var time = $("#time option:selected").val()
+					$.get( "/rider/routes/" + lat + "/" + lng + "/" + day + "/" + time, function( data, status ) {
+						schedules = $.parseJSON( data );
+						put_routes( schedules );
+					});
+
+					if( end ) {
+						end.setMap( null );
+					}
+
+					end = new google.maps.Marker({
+						position: new google.maps.LatLng( lat, lng ),
+						map: map,
+						title: "Going to."
 					});
 				}
 			});

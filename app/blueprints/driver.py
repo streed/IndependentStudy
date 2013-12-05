@@ -18,8 +18,7 @@ driver = Blueprint( "driver", __name__, template_folder="templates" )
 @login_required
 def index():
 	if( current_user.has_role( "Driver" ) ):
-		
-		requests = []
+		requests = current_user.driver[0].requests
 		return render_template( "driver/index.html", requests=requests )
 	else:
 		carForm = CarForm()
