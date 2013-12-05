@@ -4,6 +4,7 @@ from jinja2 import TemplateNotFound
 
 from ..db import accounts, db
 from ..models.forms import AccountForm
+from ..models.rider import Rider
 
 index = Blueprint( "index", __name__, template_folder="templates" )
 
@@ -23,6 +24,9 @@ def registerValidation( accountForm ):
 
 			role = accounts.find_role( "Rider" )
 			accounts.add_role_to_user( user, role )
+
+			rider = Rider( user )
+			db.session.add( rider )
 
 			db.session.commit()
 

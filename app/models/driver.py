@@ -21,6 +21,8 @@ class Driver( db.Model ):
 	account = db.relationship( "Account", backref="driver", uselist=False )
 	car = db.relationship( "Car", backref="driver", uselist=False )
 
+	requests = db.relationship( "Request", backref="driver" )
+
 	def __init__( self, license_plate, account, car, availableSeats ):
 		self.license_plate = license_plate
 		self.account = account

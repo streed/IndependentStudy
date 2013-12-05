@@ -1,12 +1,17 @@
 from flask import Blueprint, render_template, abort, json, redirect, flash
 from flask.ext.security import login_required
+from flask.ext.security.core import current_user
 from flask.ext.security.decorators import roles_required, roles_accepted
+
+from ..db import db
 
 from ..util import get_ranked_schedules
 
 rider = Blueprint( "rider", __name__, template_folder="templates" )
 
 from ..models.schedule import Schedule
+from ..models.rider import Rider
+from ..models.request import Request
 
 @rider.route( "/" )
 @login_required
@@ -14,17 +19,32 @@ from ..models.schedule import Schedule
 def index():
 	return render_template( "rider/index.html", schedules=[] )
 
+@rider.route( "/requests" )
+@login_required
+@roles_accepted( "Rider" )
+def requests():
+	return render_template( "rider/requests.html", requests=current_user.rider[0].requests )
+
 @rider.route( "/accept/<int:id>" )
 @login_required
 @roles_accepted( "Rider" )
 def accept( id ):
 	schedule = Schedule.query.filter_by( id=id ).first()
 
+	request = Request()
+	request.rider = current_user.rider[0]
+	request.driver = schedule.driver
+	request.schedule = schedule
+	current_user.rider[0].requests.append( request )
+
+	db.session.add( request )
+	db.session.commit()
+
 	day = [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ][schedule.day]
 
 	time = [ ( "%02d:%02d" % ( i // 60, i % 60 ) ) for i in range( 24 * 60 ) if i % 30 == 0][schedule.time]
 
-	flash( "Sent Request To: %s for a ride on %s at %s" % ( schedule.driver.account.name, day, time ), "success" )
+	flash( "Sent Request: To %s for a ride on %s at %s" % ( schedule.driver.account.name, day, time ), "success" )
 
 	return redirect( "/rider" )
 

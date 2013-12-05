@@ -1,0 +1,29 @@
+{% extends "rider/rider.html" %}
+{% block title %}Rider Requests{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Driver Name</th>
+					<th>Start Location</th>
+					<th>End Location</th>
+					<th>Day</th>
+					<th>Time</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for r in requests %}
+			<tr>
+				<td>{{ r.driver.account.name }}</td>
+				<td>{{ r.schedule.start_str }}</td>
+				<td>{{ r.schedule.end_str }}</td>
+				<td>{{ r.schedule.day }}</td>
+				<td>{{ r.schedule.time }}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

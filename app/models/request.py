@@ -7,11 +7,5 @@ class Request( db.Model ):
 	rider_id = db.Column( db.Integer, db.ForeignKey( "rider.id" ) )
 	schedule_id = db.Column( db.Integer, db.ForeignKey( "schedule.id" ) )
 
-	schedule = db.relationship( "Schedule", backref="request", uselist=False )
-	rider = db.relationship( "Rider", backref="requests" )
-	driver = db.relationship( "Driver", backref="requests" )
-
-	def __init__( self, schedule, rider, is_accepted=False ):
-		self.schedule = schedule
-		self.rider = rider
+	def __init__( self, is_accepted=False ):
 		self.is_accepted = is_accepted
