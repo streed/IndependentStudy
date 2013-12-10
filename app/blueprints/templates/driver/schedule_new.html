@@ -37,11 +37,11 @@ var geocoder = new google.maps.Geocoder();
 					var add = true;
 					for( i in result ) {
 						loc = result[i].geometry.location;
-						if( $("#start_str").val() == result[i].geometry.formatted_address ) {
+						if( $("#start_str").val() == result[i].geometry.location.formatted_address ) {
 							add = false;
 							break;
 						}
-						t += "<option value=\"" + loc.pb + "," + loc.qb  + "\">" +
+						t += "<option value=\"" + loc.lat() + "," + loc.lng()  + "\">" +
 							result[i].formatted_address + "</option>";
 					}
 
@@ -55,8 +55,8 @@ var geocoder = new google.maps.Geocoder();
 							$( "#start_str" ).val( s );
 							geocoder.geocode( { "address": s }, function( result, stats ) {
 								var loc = result[0].geometry.location;
-								var lat = loc.pb;
-								var lng = loc.qb;
+								var lat = loc.lat();
+								var lng = loc.lng();
 								$("#start").val( lat + "," + lng );
 								$("#start_select").remove();
 							});
@@ -66,16 +66,15 @@ var geocoder = new google.maps.Geocoder();
 						});
 					} else {
 						var loc = result[i].geometry.location;
-						var lat = loc.pb;
-						var lng = loc.qb;
+						var lat = loc.lat();
+						var lng = loc.lng();
 						$("#start").val( lat + "," + lng );
 						$("#start_select" ).remove();
 					}
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
-					console.log( loc );
-					var lat = loc.pb;
-					var lng = loc.qb;
+					var lat = loc.lat();
+					var lng = loc.lng();
 					$("#start").val( lat + "," + lng )
 				}
 			});
@@ -88,11 +87,11 @@ var geocoder = new google.maps.Geocoder();
 					var add = true;
 					for( var i in result ) {
 						loc = result[i].geometry.location;
-						if( $("#end_str").val() == result[i].geometry.formatted_address ) {
+						if( $("#end_str").val() == result[i].geometry.location.formatted_address ) {
 							add = false;
 							break;
 						}
-						t += "<option value=\"" + loc.pb + "," + loc.qb  + "\">" +
+						t += "<option value=\"" + loc.lat() + "," + loc.lng()  + "\">" +
 							result[i].formatted_address + "</option>";
 					}
 
@@ -105,8 +104,8 @@ var geocoder = new google.maps.Geocoder();
 							$( "#end_str" ).val( s );
 							geocoder.geocode( { "address": s }, function( result, stats ) {
 								var loc = result[0].geometry.location;
-								var lat = loc.pb;
-								var lng = loc.qb;
+								var lat = loc.lat();
+								var lng = loc.lng();
 								$("#end").val( lat + "," + lng );
 								$("#end_select").remove();
 							});
@@ -116,15 +115,15 @@ var geocoder = new google.maps.Geocoder();
 						});
 					} else {
 						var loc = result[i].geometry.location;
-						var lat = loc.pb;
-						var lng = loc.qb;
+						var lat = loc.lat();
+						var lng = loc.lng();
 						$("#end").val( lat + "," + lng );
 						$("#end_select" ).remove();
 					}
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
-					var lat = loc.pb;
-					var lng = loc.qb;
+					var lat = loc.lat();
+					var lng = loc.lng();
 					$("#end").val( lat + "," + lng )
 				}
 			});

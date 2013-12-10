@@ -51,6 +51,7 @@ def rank_routes( routes, client=[], num=3 ):
 	route_ids = []
 	route_id = 0
 	steps_locs = []
+	route_ranges = {}
 	rs = {}
 	for r in routes:
 		f = os.path.join( os.path.dirname( __file__ ), "..", "routes", "%d.json" % r )
@@ -62,7 +63,9 @@ def rank_routes( routes, client=[], num=3 ):
 		#KDTree expects a numpy.array so convert the points list into
 		#a numpy.array for use with the KDTree
 		for steps in routes:
-			route_ids += [ r ] * len( steps["steps"] )
+			new_ids = [ r ] * len( steps["steps"] )
+			route_ranges[r] = ( len( route_ids ), len( route_ids ) + len( new_ids ), )
+			route_ids += new_ids
 			steps_locs += [ [ p["loc"]["lat"], p["loc"]["lng"] ] for p in steps["steps"] ]
 
 	steps_locs = np.array( steps_locs )
@@ -84,6 +87,7 @@ def rank_routes( routes, client=[], num=3 ):
 	s = pts[0]
 	for p in pts[1:]:
 		s = _stable_diff( s, p )
+
 
 	#S contains the intersection of the resultant sets
 	#from both the start points and end points.

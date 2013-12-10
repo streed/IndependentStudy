@@ -25,7 +25,7 @@
 					<label>Where are you?</label>
 					<input class="where" type="text" placeholder="Where are you?">
 					<label>Destination:</label>
-					<input class="end_location" type="text" placeholder="Where are you going?">
+					<input class="end" type="text" placeholder="Where are you going?">
 
 					<label for="day">Day</label><select id="day" name="day"><option selected value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select>
 
@@ -66,7 +66,7 @@ var end_loc = [];
 							add = false;
 							break;
 						}
-						t += "<option value=\"" + loc.pb + "," + loc.qb  + "\">" +
+						t += "<option value=\"" + loc.lat() + "," + loc.lng()  + "\">" +
 							result[i].formatted_address + "</option>";
 					}
 
@@ -83,8 +83,8 @@ var end_loc = [];
 						});
 					} else {
 						var loc = result[i].geometry.location;
-						var lat = loc.pb;
-						var lng = loc.qb;
+						var lat = loc.lat();
+						var lng = loc.lng();
 
 						if( you ) {
 							you.setMap( null );
@@ -100,8 +100,9 @@ var end_loc = [];
 					}
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
-					var lat = loc.pb;
-					var lng = loc.qb;
+					console.log( loc );
+					var lat = loc.lat();
+					var lng = loc.lng();
 
 					if( you ) {
 						you.setMap( null );
@@ -118,39 +119,39 @@ var end_loc = [];
 			});
 		});
 		
-		$(".end_location").blur( function( e ) {
-			$(".end_location_multi").remove();
+		$(".end").blur( function( e ) {
+			$(".end_multi").remove();
 			geocoder.geocode( { "address": $(this).val() }, function( result, status ) {
 				if( result.length > 1 ) {
-					var t = "<select class=\"end_location_multi\"><option>Select Your Location</option>";
+					var t = "<select class=\"end_multi\"><option>Select Your Location</option>";
 					var loc = result[0].geometry.location;
 					var add = true;
 					var i = 0;
 					for( i in result ) {
 						loc = result[i].geometry.location;
-						if( $(".end_location" ).val() == result[i].formatted_address ) {
+						if( $(".end" ).val() == result[i].formatted_address ) {
 							add = false;
 							break;
 						}
-						t += "<option value=\"" + loc.pb + "," + loc.qb  + "\">" +
+						t += "<option value=\"" + loc.lat() + "," + loc.lng()  + "\">" +
 							result[i].formatted_address + "</option>";
 					}
 
 					t += "</select>";
 
 					if( add ) {
-						$(t).insertAfter( ".end_location" );
+						$(t).insertAfter( ".end" );
 
-						$( ".end_location_multi" ).change( function() {
-							var s = $(".end_location_multi option:selected" ).text();
-							$( ".end_location" ).val( s );
-							$( ".end_location" ).blur();
+						$( ".end_multi" ).change( function() {
+							var s = $(".end_multi option:selected" ).text();
+							$( ".end" ).val( s );
+							$( ".end" ).blur();
 							$(this).remove();
 						});
 					} else { 
 						var loc = result[i].geometry.location;
-						var lat = loc.pb;
-						var lng = loc.qb;
+						var lat = loc.lat();
+						var lng = loc.lng();
 
 						if( end ) {
 							end.setMap( null );
@@ -166,8 +167,8 @@ var end_loc = [];
 					}
 				} else if( result.length == 1 ) {
 					var loc = result[0].geometry.location;
-					var lat = loc.pb;
-					var lng = loc.qb;
+					var lat = loc.lat();
+					var lng = loc.lng();
 
 					if( end ) {
 						end.setMap( null );
@@ -225,8 +226,6 @@ function put_routes( s ) {
 			destination: end,
 			travelMode: google.maps.TravelMode.DRIVING
 		};
-
-		console.log( "Request: ", request );
 
 		directions.route( request, function( result, status ) {
 			if( status == google.maps.DirectionsStatus.OK ) {
