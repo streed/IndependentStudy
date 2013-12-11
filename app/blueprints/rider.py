@@ -82,7 +82,7 @@ def accept( id, lat, lng ):
         if( d < dist ):
           dist = d
           closest = l[0]
-      flash( "The ride you wish to take has other riders, so you will need to meet up with %s to organize a location to meet call them at %s." % ( closest.rider.account.name, closest.rider.account.phone_number ) ) 
+      flash( "The ride you wish to take has other riders and you are near them, so you will need to meet up with %s to organize a location to meet call them at %s." % ( closest.rider.account.name, closest.rider.account.phone_number ) ) 
     else:
       loc = Location.from_str( "%s,%s" % ( lat, lng ) )
       db.session.add( loc )
