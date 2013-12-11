@@ -216,7 +216,7 @@ function put_routes( s ) {
 				 "</td><td>" + 
 				 	s[i]["start_str"] + 
 				 "</td><td>" + s[i]["end_str"] + 
-				 "</td><td><a href=\"/rider/accept/" + s[i]["driver_id"] + "\">Accept</a></td></tr>";
+				 "</td><td><a href=\"/rider/accept/" + s[i]["driver_id"] + "/" + you.position.lat() + "/" + you.position.lng() + "\">Accept</a></td></tr>";
 		var temp = s[i];
 		var start = new google.maps.LatLng( temp["start"][0], temp["start"][1] );
 		var end = new google.maps.LatLng( temp["end"][0], temp["end"][1] );
