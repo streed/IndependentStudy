@@ -19,7 +19,7 @@
 				<td>{{ "%02d:%02d" % ( ( s.time * 30 ) // 60, ( s.time * 30 ) % 60 ) }}</td>
 				<td>{{ s.start_str}}</td>
 				<td>{{ s.end_str }}</td>
-				<td><a href="/driver/schedule/{{ s.id }}/accept">Vacation</a> | <a href="/driver/schedule/{{ s.id }}/decline">Delete</a></td>
+				<td><a href="/driver/schedule/{{ s.id }}/delete">Delete</a></td>
 			</tr>
 			{% endfor %}
 		</tbody>

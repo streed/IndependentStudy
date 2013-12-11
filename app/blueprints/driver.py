@@ -44,6 +44,16 @@ def schedule():
 	else:
 		return redirect( "/" )
 
+@driver.route( "/schedule/<int:id>/delete" )
+@login_required
+@roles_required( "Driver" )
+def schedule_delete( id ):
+    schedule = Schedule.query.filter_by( id=id ).first()
+    db.session.delete( schedule )
+    db.session.commit()
+
+    return redirect( "/driver/schedule" )
+
 @driver.route( "/schedule/new", methods=["get", "post"] )
 @roles_required( "Driver" )
 @login_required
