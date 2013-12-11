@@ -11,6 +11,7 @@ This independent study is to design and implement a website with the following f
 - [x] The system will rank the routes based on how close they are to a specific route.
 - [x] The rider can select their preferred route.
 - [x] The driver is notified of this choice.
+- [x] When a driver accepts a request the rider receives a notification of this event.
 
 Implementation Details
 ======================

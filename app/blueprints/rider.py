@@ -47,7 +47,9 @@ def index():
   for r in requests:
     if( r.is_accepted and r.is_deleted ):
       flash( "Your ride from %s to %s has been accepted by %s." % ( r.schedule.start_str, r.schedule.end_str, r.schedule.driver.account.name ), "success" )
-      db.session.delete( r )
+    elif( not r.is_accepted and r.is_deleted ):
+      flash( "Your ride from %s to %s has been declined by %s." % ( r.schedule.start_str, r.schedules.end_str, r.schedule.driver.account.name ), "warning" )
+    db.session.delete( r )
   db.session.commit()
   return render_template( "rider/index.html", schedules=[] )
 
@@ -98,7 +100,6 @@ def accept( id, lat, lng ):
       db.session.commit()
 
       day = schedule.day_str
-
       time = schedule.time_str
 
       flash( "Sent Request: To %s for a ride on %s at %s" % ( schedule.driver.account.name, day, time ), "success" )
