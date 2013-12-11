@@ -8,14 +8,14 @@ This independent study is to design and implement a website with the following f
 - [x] Drivers can create a schedule of days, times, and locations they are available to drive.
 - [x] Riders can request a ride.
 - [x] The system will find them routes and schedules of drivers that closesly match the rider's request.
-- [ ] The system will rank the routes based on how close they are to a specific route.
+- [x] The system will rank the routes based on how close they are to a specific route.
 - [x] The rider can select their preferred route.
-- [ ] The driver is notified of this choice.
+- [x] The driver is notified of this choice.
 
 Implementation Details
 ======================
 
-The website will be built ontop of Flask and a MySql database. Flask is a framework for building websites easily in Python.
+The website will be built on top of Flask and a MySql database. Flask is a framework for building websites easily in Python.
 It provides the mechanisms required to handle HTTP requests and the semantics that surround that system. There are additions
 to the Flask framework that are included in the `requirements.txt` file.
 

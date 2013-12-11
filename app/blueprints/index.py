@@ -20,7 +20,7 @@ def registerValidation( accountForm ):
 
 			user.name = accountForm.name.data
 			user.age = accountForm.age.data
-			user.phoneNumber = accountForm.phoneNumber.data
+			user.phone_number = accountForm.phoneNumber.data
 
 			role = accounts.find_role( "Rider" )
 			accounts.add_role_to_user( user, role )

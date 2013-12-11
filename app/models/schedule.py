@@ -46,7 +46,7 @@ class Schedule( db.Model ):
 	driver_id = db.Column( db.Integer, db.ForeignKey( "driver.id" ) )
 	driver = db.relationship( "Driver", backref="schedules", uselist=False )
 
-	requests = db.relationship( "Request", backref="schedule", uselist=False )
+	requests = db.relationship( "Request", backref="schedule" )
 
 	def __init__( self, day, time, is_permanent, is_active, driver, start_str, start, end_str, end ):
 		self.day = day

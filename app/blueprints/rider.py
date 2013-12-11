@@ -12,6 +12,7 @@ rider = Blueprint( "rider", __name__, template_folder="templates" )
 from ..models.schedule import Schedule
 from ..models.rider import Rider
 from ..models.request import Request
+from ..models.location import Location
 
 from math import radians, sin, cos, asin, sqrt, pi, atan2
 EARTH_RADIUS = 3956.0
@@ -64,22 +65,30 @@ def accept( id, lat, lng ):
   schedule = Schedule.query.filter_by( id=id ).first()
   requests = schedule.requests
 
-  total_riders = sum( [ 1 for _ in requests ] )
+  total_riders = 0
+  if( requests ):
+    total_riders = len( requests )
 
-  if( total_riders + 1 <= schedule.total_riders ):
+  if( total_riders + 1 <= schedule.driver.availableSeats ):
     #other riders so many need to have people walk to each other, 
     #loop through and find the closest person and have this user
     #walk to the other user.
     if( total_riders > 0 ):
-      locs = [ ( r.rider_id, r.loc ) for r in requests ]
-      print( locs )
+      locs = [ ( r, r.loc ) for r in requests ]
+      dist = float( "inf" )
+      closest = None
+      for l in locs:
+        d = _get_distance( l[1].lat, l[1].lng, float( lat ), float( lng ) )
+        if( d < dist ):
+          dist = d
+          closest = l[0]
+      flash( "The ride you wish to take has other riders, so you will need to meet up with %s to organize a location to meet call them at %s." % ( closest.rider.account.name, closest.rider.account.phone_number ) ) 
     else:
-      loc = Location.from_str( "%s,%s", lat, lng )
+      loc = Location.from_str( "%s,%s" % ( lat, lng ) )
       db.session.add( loc )
       db.session.commit()
 
-      request = Request()
-      request.loc = loc
+      request = Request( loc )
       request.rider = current_user.rider[0]
       request.driver = schedule.driver
       request.schedule = schedule
@@ -114,7 +123,7 @@ def get_routes( slat, slng, elat, elng, day, time ):
   ret = []
   for s in scheds:
     ret.append( { "driver_name": s.driver.account.name, 
-         "driver_id": s.driver.id, 
+         "schedule_id": s.id, 
          "start_str": s.start_str,
          "end_str": s.end_str,
          "start": [ s.start.lat, s.start.lng ], 
