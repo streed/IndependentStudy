@@ -11,17 +11,25 @@
 					<th>End Location</th>
 					<th>Day</th>
 					<th>Time</th>
+					<th>Accepted</th>
 				</tr>
 			</thead>
 			<tbody>
 			{% for r in requests %}
-			<tr>
-				<td>{{ r.driver.account.name }}</td>
-				<td>{{ r.schedule.start_str }}</td>
-				<td>{{ r.schedule.end_str }}</td>
-				<td>{{ r.schedule.day }}</td>
-				<td>{{ r.schedule.time }}</td>
-			</tr>
+				{% if not r.is_deleted %}
+					<tr>
+						<td>{{ r.driver.account.name }}</td>
+						<td>{{ r.schedule.start_str }}</td>
+						<td>{{ r.schedule.end_str }}</td>
+						<td>{{ r.schedule.day_str }}</td>
+						<td>{{ r.schedule.time_str }}</td>
+						{% if r.is_accepted %}
+							<td>Yes</td>
+						{% else %}
+							<td>No</td>
+						{% endif %}
+					</tr>
+				{% endif %}
 			{% endfor %}
 			</tbody>
 		</table>

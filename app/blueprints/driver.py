@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, redirect
+from flask import Blueprint, render_template, abort, redirect, flash
 from flask.ext.security import login_required
 from flask.ext.security.core import current_user
 from flask.ext.security.decorators import roles_required, roles_accepted
@@ -9,6 +9,7 @@ from ..models.car import Car, CarForm
 from ..models.driver import Driver
 from ..models.location import Location
 from ..models.schedule import Schedule, ScheduleForm
+from ..models.request import Request
 from ..util import errors, save_route
 
 driver = Blueprint( "driver", __name__, template_folder="templates" )
@@ -83,4 +84,25 @@ def schedule_add():
 		errors( scheduleForm )
 		return render_template( "driver/schedule_new.html", schedule=scheduleForm )
 
+@driver.route( "/request/<int:id>/<method>" )
+@login_required
+@roles_required( "Driver" )
+def request_accept( id, method ):
+	request = Request.query.filter_by( id=id ).first()
+
+	if( method == "accept" ):
+		flash( "You accepted ther request to give %s a ride from %s to %s." % ( request.rider.account.name, request.schedule.start_str, request.schedule.end_str ), "success" )
+		request.is_accepted = True
+		request.is_deleted = True
+	elif( method == "decline" ):
+		flash( "You declined the request from %s." % ( request.rider.account.name ), "warning" )
+		request.is_accepted = False
+		request.is_deleted = False
+	else:
+		flash( "Incorrect parameters.", "danger" )
+
+	db.session.add( request )
+	db.session.commit()
+	
+	return redirect( "/driver" )
 

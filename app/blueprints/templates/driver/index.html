@@ -15,14 +15,16 @@
 		</thead>
 		<tbody>
 			{% for r in requests %}
-				<tr>
-					<td>{{ r.rider.account.name }}</td>
-					<td>{{ r.schedule.start_str }}</td>
-					<td>{{ r.schedule.end_str }}</td>
-					<td>{{ r.schedule.day }}</td>
-					<td>{{ r.schedule.time }}</td>
-					<td><a href="/driver/accept/{{ r.id }}">Accept</a>|<a href="/driver/decline/{{ r.id }}">Decline</a></td>
-				</tr>
+				{% if not r.is_deleted %}
+					<tr>
+						<td>{{ r.rider.account.name }}</td>
+						<td>{{ r.schedule.start_str }}</td>
+						<td>{{ r.schedule.end_str }}</td>
+						<td>{{ r.schedule.day_str }}</td>
+						<td>{{ r.schedule.time_str }}</td>
+						<td><a href="/driver/request/{{ r.id }}/accept">Accept</a>|<a href="/driver/request/{{ r.id }}/decline">Decline</a></td>
+					</tr>
+				{% endif %}
 			{% endfor %}
 		</tbody>
 	</table>

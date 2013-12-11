@@ -42,6 +42,12 @@ def filter_by_distance( lat, lng, schedules, dist=0.5, use_start=True ):
 @login_required
 @roles_accepted( "Rider" )
 def index():
+        requests = current_user.rider[0].requests
+        for r in requests:
+                if( r.is_accepted and r.is_deleted ):
+                        flash( "Your ride from %s to %s has been accepted by %s." % ( r.schedule.start_str, r.schedule.end_str, r.schedule.driver.account.name ), "success" )
+                        db.session.delete( r )
+        db.session.commit()
         return render_template( "rider/index.html", schedules=[] )
 
 @rider.route( "/requests" )
@@ -54,6 +60,8 @@ def requests():
 @login_required
 @roles_accepted( "Rider" )
 def accept( id ):
+        #Check if the schedule already has a user?
+        requests = Request.query.filter_by( schedule_id=id ).all()
         schedule = Schedule.query.filter_by( id=id ).first()
 
         request = Request()
@@ -65,9 +73,9 @@ def accept( id ):
         db.session.add( request )
         db.session.commit()
 
-        day = [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ][schedule.day]
+        day = schedule.day_str
 
-        time = [ ( "%02d:%02d" % ( i // 60, i % 60 ) ) for i in range( 24 * 60 ) if i % 30 == 0][schedule.time]
+        time = schedule.time_str
 
         flash( "Sent Request: To %s for a ride on %s at %s" % ( schedule.driver.account.name, day, time ), "success" )
 

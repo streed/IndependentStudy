@@ -59,6 +59,14 @@ class Schedule( db.Model ):
 		self.end_str = end_str
 		self.end = end
 
+	@property
+	def day_str( self ):
+		return [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ][self.day]
+
+	@property
+	def time_str( self ):
+		return [ "%02d:%02d" % ( i // 60 , i % 60 ) for i in range( 24 * 60 ) if i % 30 == 0 ][self.time]
+
 class ScheduleForm( Form ):
 	day = SelectField( 'Day', coerce=int, default=0, choices=[(0, "Monday"), ( 1, "Tuesday" ), ( 2, "Wednesday" ), ( 3, "Thursday" ), ( 4, "Friday" ), ( 5, "Saturday" ), ( 6, "Sunday" ) ] )
 	time = SelectField( 'Time', coerce=int, default=0, choices=[ ( i // 30, "%02d:%02d" % ( i // 60, i % 60 ) ) for i in range( 24 * 60 ) if i % 30 == 0] )
